@@ -89,7 +89,7 @@
         <div class="space-y-3 text-center flex flex-col items-center">
           <div class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md aspect-[2/3] w-full bg-slate-100 dark:bg-slate-800">
             <img 
-              src="https://upload.wikimedia.org/wikipedia/en/7/7e/Die_Hard_%281988_film%29_poster.xb.jpg" 
+              src="https://m.media-amazon.com/images/M/MV5BMGNlYmM1NmQtYWExMS00NmRjLTg5ZmEtMmYyYzJkMzljYWMxXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" 
               alt="Die Hard Poster" 
               class="w-full h-full object-cover"
             />
@@ -111,7 +111,7 @@
         <div class="space-y-3 text-center flex flex-col items-center">
           <div class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md aspect-[2/3] w-full bg-slate-100 dark:bg-slate-800">
             <img 
-              src="https://upload.wikimedia.org/wikipedia/en/9/98/John_Wick_Teaser_Poster.png" 
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGN3_tE55aTiyj8xMJk7nLp9HTMOWRaD2aaYk7th_V70wHTePsjeznc2BgXiWQg_MPJmqG&s=10" 
               alt="John Wick Poster" 
               class="w-full h-full object-cover"
             />
@@ -133,7 +133,7 @@
         <div class="space-y-3 text-center flex flex-col items-center">
           <div class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md aspect-[2/3] w-full bg-slate-100 dark:bg-slate-800">
             <img 
-              src="https://upload.wikimedia.org/wikipedia/en/a/a6/Helluva_Boss_title_card.png" 
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8zotZ5QGtP4yK-xeh4v43_UPUXmsy76mDrIe62xd8YvA-1PJ_HxW4AYTyseXqquLSsBv_lw&s=10" 
               alt="Helluva Boss Poster" 
               class="w-full h-full object-cover"
             />
@@ -155,7 +155,7 @@
         <div class="space-y-3 text-center flex flex-col items-center">
           <div class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-md aspect-[2/3] w-full bg-slate-100 dark:bg-slate-800">
             <img 
-              src="https://upload.wikimedia.org/wikipedia/en/0/00/Reacher_season_1.jpeg" 
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTj0McCC2IcNQ8BmHpVAhWNNKXS6NSwocDD3PPICblL5LSC3doWB_CT9sL93-EXTajY-Uufjw&s=10" 
               alt="Reacher Poster" 
               class="w-full h-full object-cover"
             />
