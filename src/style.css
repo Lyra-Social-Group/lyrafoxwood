@@ -5,28 +5,37 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   }
 
+  /* Light mode green gradient */
   body {
-    background-color: #ffffff;
-    color: #0f172a;
-    margin: 0;
-    padding: 0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(135deg, #ecfdf5 0%, #ccfbf1 50%, #e2e8f0 100%) !important;
+    min-height: 100vh;
+    color: #022c22;
+  }
+
+  /* Dark mode deep forest green gradient */
+  html.dark body {
+    background: linear-gradient(135deg, #020617 0%, #062419 50%, #02130c 100%) !important;
+    min-height: 100vh;
+    color: #ecfdf5;
   }
 }
 
-/* Custom Input Focus States */
-input:focus, 
-textarea:focus {
-  outline: none;
-  border-color: #0070a8;
+/* Custom Forest Green & Cyan Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Smooth Icon Hover Effects */
-.fab, .fas, .fa-brands, .fa-solid {
-  transition: color 0.2s ease-in-out;
+::-webkit-scrollbar-track {
+  background: #02130c;
 }
 
+::-webkit-scrollbar-thumb {
+  background: #059669;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #22d3ee;
+}
