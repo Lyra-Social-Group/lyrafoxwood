@@ -104,7 +104,7 @@
           <i class="fa-solid fa-guitar text-2xl text-red-500 mb-2"></i>
           <h3 class="font-bold text-emerald-950 dark:text-emerald-50 text-lg">Heavy Metal & Rock</h3>
           <p class="text-emerald-800 dark:text-emerald-200 text-sm leading-relaxed">
-            Huge fan of heavy metal and rock, fresh off a concert here in 2026. Writing and recording my own music music sance 2025. My music is alot of diffrent genres.
+            Huge fan of heavy metal and rock, fresh off a concert here in 2026. Writing and recording my own music since 2025. My music is a lot of different genres.
           </p>
         </div>
 
