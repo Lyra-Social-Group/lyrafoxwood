@@ -156,8 +156,17 @@
 
     <footer class="w-full bg-emerald-100/50 dark:bg-slate-950/80 py-8 px-6 sm:px-12 border-t border-emerald-200/60 dark:border-emerald-900/40 transition-colors duration-300">
       <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-        <div>
-          <div class="text-sm text-emerald-900 dark:text-emerald-300 text-center md:text-left font-medium">© 2026 Lyra Foxwood</div>
+        <div class="flex flex-col md:flex-row items-center gap-4 text-sm text-emerald-900 dark:text-emerald-300 font-medium">
+          <div>© 2026 Lyra Foxwood</div>
+          <span class="hidden md:inline text-emerald-600/40 dark:text-emerald-700/40">•</span>
+          <a 
+            href="https://legal.lyrasocialgroup.tech/privacy/privacy-policy" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors"
+          >
+            Privacy Policy
+          </a>
         </div>
 
         <div class="flex flex-wrap justify-center items-center gap-4 text-emerald-900 dark:text-emerald-200 text-lg">
@@ -175,11 +184,14 @@
       </div>
     </footer>
 
+    <CookieBanner />
+
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import CookieBanner from './components/CookieBanner.vue'
 
 const isDark = ref(false)
 const mobileMenuOpen = ref(false)
