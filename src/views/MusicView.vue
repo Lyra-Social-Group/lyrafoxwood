@@ -185,7 +185,7 @@ onUnmounted(() => {
           <iframe 
             data-testid="embed-iframe" 
             style="border-radius:12px" 
-            src="https://open.spotify.com/playlist/4AloSizu5Cw4ZG5EFUpGYf?si=480892ffd0cf48df" 
+            src="" 
             width="100%" 
             height="352" 
             frameBorder="0" 
