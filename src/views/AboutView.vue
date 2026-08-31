@@ -55,7 +55,7 @@
       <div class="max-w-xl mx-auto bg-gradient-to-br from-emerald-900 to-slate-950 text-white rounded-2xl p-6 sm:p-8 shadow-2xl border border-emerald-500/30 space-y-6">
         <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 text-center sm:text-left">
           <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-cyan-400 flex-shrink-0 shadow-md">
-            <img src="../assets/hero.png" alt="Lyra Foxwood" class="w-full h-full object-cover" />
+            <img :src="heroImage" alt="Lyra Foxwood" class="w-full h-full object-cover" />
           </div>
           <div class="space-y-1">
             <h3 class="text-2xl font-extrabold text-white">Lyra Foxwood</h3>
@@ -209,7 +209,7 @@
         <div class="space-y-3 text-center flex flex-col items-center">
           <div class="rounded-lg overflow-hidden border border-emerald-300 dark:border-emerald-800 shadow-md aspect-[2/3] w-full bg-slate-900/40">
             <img 
-              src="data:image/jpeg;base64,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" 
+              src="https://m.media-amazon.com/images/M/MV5BMzMwYjJkYTYtMGJjYi00NWZlLTlhMGUtNWVhZTA3ZDAwNzA4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" 
               alt="Die Hard Poster" 
               class="w-full h-full object-cover"
             />
@@ -297,15 +297,3 @@
     </section>
   </div>
 </template>
-<script setup>
-import { useSeoMeta } from '@unhead/vue'
-
-useSeoMeta({
-  title: 'About - Lyra Foxwood',
-  description: 'Learn more about Lyra Foxwood—trans-feminine fox, Linux systems explorer, tech enthusiast, and content creator.',
-  ogTitle: 'About - Lyra Foxwood',
-  ogDescription: 'Learn more about Lyra Foxwood—trans-feminine fox, Linux systems explorer, tech enthusiast, and content creator.',
-  ogImage: 'https://lyrafoxwood.app/hero.png',
-  twitterCard: 'summary_large_image',
-})
-</script>

@@ -1,3 +1,4 @@
+
 <template>
   <div class="min-h-[70vh] flex items-center justify-center px-6 py-12 text-center">
     <div class="max-w-lg space-y-6 bg-slate-950/80 border border-emerald-800/60 rounded-2xl p-8 sm:p-12 shadow-2xl backdrop-blur-md">
@@ -27,11 +28,3 @@
     </div>
   </div>
 </template>
-<script setup>
-import { useSeoMeta } from '@unhead/vue'
-
-useSeoMeta({
-  title: '404 Page Not Found - Lyra Foxwood',
-  description: 'The requested page could not be found.',
-})
-</script>

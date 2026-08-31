@@ -1,15 +1,3 @@
-<script setup>
-import { useSeoMeta } from '@unhead/vue'
-
-useSeoMeta({
-  title: 'Lyra Foxwood - Main Website',
-  description: 'Trans-feminine fox, tech enthusiast, Linux explorer, content creator, and musician building web experiences.',
-  ogTitle: 'Lyra Foxwood - Main Website',
-  ogDescription: 'Trans-feminine fox, tech enthusiast, Linux explorer, content creator, and musician building web experiences.',
-  ogImage: 'https://lyrafoxwood.app/hero.png',
-  twitterCard: 'summary_large_image',
-})
-</script>
 <template>
   <div>
     <!-- Hero Section -->

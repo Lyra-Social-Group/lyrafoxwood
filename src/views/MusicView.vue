@@ -1,3 +1,59 @@
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { getCurrentlyPlaying, getRecentlyPlayed } from '../services/spotify'
+
+const currentTrack = ref(null)
+const isPlaying = ref(false)
+const recentlyPlayed = ref([])
+let timer = null
+
+const fetchMusicData = async () => {
+  const nowData = await getCurrentlyPlaying()
+  if (nowData && nowData.item) {
+    isPlaying.value = nowData.is_playing
+    currentTrack.value = {
+      title: nowData.item.name,
+      artist: nowData.item.artists.map(a => a.name).join(', '),
+      album: nowData.item.album.name,
+      albumArt: nowData.item.album.images[0]?.url,
+      url: nowData.item.external_urls.spotify,
+    }
+  } else {
+    isPlaying.value = false
+    currentTrack.value = null
+  }
+
+  const recentItems = await getRecentlyPlayed(5)
+  recentlyPlayed.value = recentItems.map(item => ({
+    title: item.track.name,
+    artist: item.track.artists.map(a => a.name).join(', '),
+    albumArt: item.track.album.images[0]?.url,
+    url: item.track.external_urls.spotify,
+    timeAgo: formatTimeAgo(new Date(item.played_at)),
+  }))
+}
+
+const formatTimeAgo = (date) => {
+  const seconds = Math.floor((new Date() - date) / 1000)
+  if (seconds < 60) return `${seconds}s ago`
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  return `${days}d ago`
+}
+
+onMounted(() => {
+  fetchMusicData()
+  timer = setInterval(fetchMusicData, 15000)
+})
+
+onUnmounted(() => {
+  if (timer) clearInterval(timer)
+})
+</script>
+
 <template>
   <div class="max-w-5xl mx-auto px-6 py-12 sm:py-20 space-y-16">
     <section class="text-center space-y-4">
@@ -10,7 +66,6 @@
     </section>
 
     <section class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-      
       <div class="md:col-span-1 bg-gradient-to-br from-emerald-900 to-slate-950 text-white rounded-2xl p-6 shadow-2xl border border-cyan-400/40 space-y-4">
         <div class="flex items-center justify-between text-xs font-semibold text-cyan-400">
           <span class="flex items-center space-x-2">
@@ -143,71 +198,3 @@
     </section>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { getCurrentlyPlaying, getRecentlyPlayed } from '../services/spotify'
-
-const currentTrack = ref(null)
-const isPlaying = ref(false)
-const recentlyPlayed = ref([])
-let timer = null
-
-const fetchMusicData = async () => {
-  const nowData = await getCurrentlyPlaying()
-  if (nowData && nowData.item) {
-    isPlaying.value = nowData.is_playing
-    currentTrack.value = {
-      title: nowData.item.name,
-      artist: nowData.item.artists.map(a => a.name).join(', '),
-      album: nowData.item.album.name,
-      albumArt: nowData.item.album.images[0]?.url,
-      url: nowData.item.external_urls.spotify,
-    }
-  } else {
-    isPlaying.value = false
-    currentTrack.value = null
-  }
-
-  const recentItems = await getRecentlyPlayed(5)
-  recentlyPlayed.value = recentItems.map(item => ({
-    title: item.track.name,
-    artist: item.track.artists.map(a => a.name).join(', '),
-    albumArt: item.track.album.images[0]?.url,
-    url: item.track.external_urls.spotify,
-    timeAgo: formatTimeAgo(new Date(item.played_at)),
-  }))
-}
-
-const formatTimeAgo = (date) => {
-  const seconds = Math.floor((new Date() - date) / 1000)
-  if (seconds < 60) return `${seconds}s ago`
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
-}
-
-onMounted(() => {
-  fetchMusicData()
-  timer = setInterval(fetchMusicData, 15000)
-})
-
-onUnmounted(() => {
-  if (timer) clearInterval(timer)
-})
-
-import { useSeoMeta } from '@unhead/vue'
-
-useSeoMeta({
-  title: 'Music Hub - Lyra Foxwood',
-  description: 'Live Spotify listening stats, recent tracks, heavy rotation playlists, and multi-genre music creations.',
-  ogTitle: 'Music Hub - Lyra Foxwood',
-  ogDescription: 'Live Spotify listening stats, recent tracks, heavy rotation playlists, and multi-genre music creations.',
-  ogImage: 'https://lyrafoxwood.app/hero.png',
-  twitterCard: 'summary_large_image',
-})
-
-</script>
