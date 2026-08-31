@@ -198,4 +198,16 @@ onMounted(() => {
 onUnmounted(() => {
   if (timer) clearInterval(timer)
 })
+
+import { useSeoMeta } from '@unhead/vue'
+
+useSeoMeta({
+  title: 'Music Hub - Lyra Foxwood',
+  description: 'Live Spotify listening stats, recent tracks, heavy rotation playlists, and multi-genre music creations.',
+  ogTitle: 'Music Hub - Lyra Foxwood',
+  ogDescription: 'Live Spotify listening stats, recent tracks, heavy rotation playlists, and multi-genre music creations.',
+  ogImage: 'https://lyrafoxwood.app/hero.png',
+  twitterCard: 'summary_large_image',
+})
+
 </script>

@@ -129,3 +129,15 @@
     </div>
   </div>
 </template>
+<script setup>
+import { useSeoMeta } from '@unhead/vue'
+
+useSeoMeta({
+  title: 'Links & Socials - Lyra Foxwood',
+  description: 'Connect with Lyra Foxwood on Twitch, YouTube, Bluesky, Telegram, Patreon, and social profiles.',
+  ogTitle: 'Links & Socials - Lyra Foxwood',
+  ogDescription: 'Connect with Lyra Foxwood on Twitch, YouTube, Bluesky, Telegram, Patreon, and social profiles.',
+  ogImage: 'https://lyrafoxwood.app/hero.png',
+  twitterCard: 'summary_large_image',
+})
+</script>

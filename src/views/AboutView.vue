@@ -297,3 +297,15 @@
     </section>
   </div>
 </template>
+<script setup>
+import { useSeoMeta } from '@unhead/vue'
+
+useSeoMeta({
+  title: 'About - Lyra Foxwood',
+  description: 'Learn more about Lyra Foxwood—trans-feminine fox, Linux systems explorer, tech enthusiast, and content creator.',
+  ogTitle: 'About - Lyra Foxwood',
+  ogDescription: 'Learn more about Lyra Foxwood—trans-feminine fox, Linux systems explorer, tech enthusiast, and content creator.',
+  ogImage: 'https://lyrafoxwood.app/hero.png',
+  twitterCard: 'summary_large_image',
+})
+</script>

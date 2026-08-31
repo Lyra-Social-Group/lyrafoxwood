@@ -190,3 +190,15 @@
     </section>
   </div>
 </template>
+<script setup>
+import { useSeoMeta } from '@unhead/vue'
+
+useSeoMeta({
+  title: 'Skills & Tech - Lyra Foxwood',
+  description: 'Linux systems administration, hardware assembly, networking setup, and frontend web development.',
+  ogTitle: 'Skills & Tech - Lyra Foxwood',
+  ogDescription: 'Linux systems administration, hardware assembly, networking setup, and frontend web development.',
+  ogImage: 'https://lyrafoxwood.app/hero.png',
+  twitterCard: 'summary_large_image',
+})
+</script>

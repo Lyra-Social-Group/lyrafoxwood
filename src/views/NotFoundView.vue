@@ -27,3 +27,11 @@
     </div>
   </div>
 </template>
+<script setup>
+import { useSeoMeta } from '@unhead/vue'
+
+useSeoMeta({
+  title: '404 Page Not Found - Lyra Foxwood',
+  description: 'The requested page could not be found.',
+})
+</script>
