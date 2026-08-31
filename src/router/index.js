@@ -4,13 +4,16 @@ import AboutView from '../views/AboutView.vue'
 import SkillsView from '../views/SkillsView.vue'
 import LinksView from '../views/LinksView.vue'
 import MusicView from '../views/MusicView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
   { path: '/about', name: 'About', component: AboutView },
   { path: '/skills', name: 'Skills', component: SkillsView },
-  { path: '/links', name: 'Links', component: LinksView },
   { path: '/music', name: 'Music', component: MusicView },
+  { path: '/links', name: 'Links', component: LinksView },
+  // Catch-all route for unmatched paths
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView }
 ]
 
 const router = createRouter({
