@@ -1,0 +1,25 @@
+# Lyra Foxwood
+
+> Trans-feminine fox, tech enthusiast, Linux explorer, content creator, and musician navigating virtual worlds and building web experiences.
+
+## Core Information
+- **Name**: Lyra Foxwood
+- **Pronouns**: She / Her (MTF)
+- **Location**: Michigan, USA
+- **Website**: https://lyrafoxwood.app
+- **Contact Email**: Contactme@lyrafoxwood.app
+- **Primary Operating Systems**: Arch Linux & Nobara
+- **Career Focus**: IT & Network Infrastructure, Linux Systems Administration
+
+## Technical Passions & Focus
+- **Linux Administration**: Desktop customization, bash scripting, Arch Linux & Nobara setups.
+- **Hardware & Systems**: Custom PC assembly, hardware diagnostics, network configurations.
+- **Web Development**: Modern frontend development with Vue 3, Nuxt, Tailwind CSS, and API integrations.
+- **Music & Media**: Writing and recording multi-genre music (Heavy Metal, Rock, Electronic) since 2025.
+
+## Playlists & Social Media
+- **Twitch**: https://twitch.tv/LyraFoxwood
+- **YouTube**: https://youtube.com/channel/UCngrGmmna1EEp5Q940Fy95g
+- **Bluesky**: https://bsky.app/profile/lyrafoxwood.social
+- **Telegram**: https://t.me/Lyrafoxwood
+- **Patreon**: https://patreon.com/LyraTheFox
