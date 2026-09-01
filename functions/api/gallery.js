@@ -57,11 +57,11 @@ function getFolderId(value) {
 
 function decodeHtml(value) {
   return value
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+    .replace(/&/g, '&')
+    .replace(/"/g, '"')
+    .replace(/'/g, "'")
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
 }
 
 function safeDate(value) {
@@ -232,7 +232,7 @@ function buildFallbackImageUrl(fileId) {
    * Google-side throttling).
    */
 
-  return `https://lh3.googleusercontent.com/d/${encodeURIComponent(
+  return `https://lh3.googleusercontent.com/d/$${encodeURIComponent(
     fileId
   )}=w1000-h1000`
 }
