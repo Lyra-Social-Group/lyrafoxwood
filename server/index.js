@@ -1,38 +1,15 @@
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler'
+import { onRequest as handleGallery } from '../functions/api/gallery.js'
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url)
 
-    // Route API requests to your gallery logic or import it directly
-    if (url.pathname.startsWith('/api/')) {
-      // Handle your gallery API or delegate to your handler logic here
-      return new Response(JSON.stringify({ error: 'API endpoint' }), {
-        headers: { 'Content-Type': 'application/json' }
-      })
+    // Route API requests directly to your gallery function
+    if (url.pathname.startsWith('/api/gallery')) {
+      return handleGallery({ request, env, ctx })
     }
 
-    // Serve static assets and handle SPA routing for frontend routes
-    try {
-      return await getAssetFromKV(
-        {
-          request,
-          waitUntil: ctx.waitUntil.bind(ctx),
-        },
-        {
-          mapRequestToAsset: (req) => {
-            // Fallback to index.html for client-side routing (e.g. /gallery)
-            const parsedUrl = new URL(req.url)
-            if (!parsedUrl.pathname.includes('.')) {
-              parsedUrl.pathname = '/index.html'
-              return new Request(parsedUrl.toString(), req)
-            }
-            return req
-          },
-        }
-      )
-    } catch (e) {
-      return new Response('Not Found', { status: 404 })
-    }
+    // Serve frontend static assets and handle SPA routing via Workers Asset Binding
+    return env.ASSETS.fetch(request)
   },
 }
