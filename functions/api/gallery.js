@@ -48,8 +48,6 @@ function getFolderId(value) {
   if (!value) return null
 
   const valueString = String(value).trim()
-
-  // Accept either a raw folder ID or a complete Drive folder URL.
   const match = valueString.match(/\/folders\/([a-zA-Z0-9_-]+)/)
 
   return match ? match[1] : valueString
@@ -77,14 +75,6 @@ function safeDate(value) {
 function parseDriveEntries(html) {
   const entries = new Map()
 
-  /*
-   * Google Drive embedded folder view normally contains links such as:
-   *
-   * https://drive.google.com/file/d/FILE_ID/view
-   *
-   * We extract those file IDs and then attempt to find the nearby filename.
-   */
-
   const fileLinkRegex =
     /https?:\\?\/\\?\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]{10,})\/view(?:\?[^"'\\s<>]*)?/g
 
@@ -110,17 +100,49 @@ function parseDriveEntries(html) {
         name: decodeHtml(item[0]).trim(),
         position: start + item.index,
       }))
-      .filter((item) => item.name.length > 0)
+      .filter((item) => {
+        const lower = item.name.toLowerCase()
+        return (
+          item.name.length > 0 &&
+          !lower.includes('drive.google') &&
+          !lower.includes('google') &&
+          !lower.includes('drive') &&
+          !lower.startsWith('http') &&
+          !lower.includes('//') &&
+          !lower.includes('a href') &&
+          !lower.includes('class') &&
+          !lower.includes('data')
+        )
+      })
 
-    const rawFilename = names.length
-      ? names.sort(
-          (a, b) =>
-            Math.abs(a.position - match.index) -
-            Math.abs(b.position - match.index)
-        )[0].name
-      : `VRChat Shot ${entries.size + 1}`
+    const validNames = names.sort(
+      (a, b) =>
+        Math.abs(a.position - match.index) -
+        Math.abs(b.position - match.index)
+    )
 
-    const filename = rawFilename.includes('.') ? rawFilename : `${rawFilename}.png`
+    let rawFilename = null
+    for (const item of validNames) {
+      const low = item.name.toLowerCase()
+      if (
+        !low.includes('drive') &&
+        !low.includes('google') &&
+        !low.includes('http') &&
+        item.name.length < 60
+      ) {
+        rawFilename = item.name
+        break
+      }
+    }
+
+    const filename =
+      rawFilename &&
+      !rawFilename.toLowerCase().includes('drive') &&
+      !rawFilename.toLowerCase().includes('google')
+        ? rawFilename.includes('.')
+          ? rawFilename
+          : `${rawFilename}.png`
+        : `VRChat Shot ${entries.size + 1}`
 
     if (!entries.has(id)) {
       entries.set(id, {
@@ -130,13 +152,6 @@ function parseDriveEntries(html) {
       })
     }
   }
-
-  /*
-   * Fallback for newer Google Drive markup.
-   *
-   * Google sometimes exposes the folder contents through the internal
-   * _DRIVE_ivd structure.
-   */
 
   const ivdMatch = html.match(
     /window\['_DRIVE_ivd'\]\s*=\s*'([\s\S]*?)';/
@@ -204,7 +219,6 @@ function parseDriveEntries(html) {
       }
     } catch {
       // Ignore malformed internal Drive data.
-      // Explicit file links will still be used.
     }
   }
 
@@ -218,9 +232,9 @@ function buildImageUrl(fileId) {
 }
 
 function buildFallbackImageUrl(fileId) {
-  return `https://lh3.googleusercontent.com/d/$${encodeURIComponent(
+  return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(
     fileId
-  )}=w1000-h1000`
+  )}`
 }
 
 async function fetchFolder(folderId) {
