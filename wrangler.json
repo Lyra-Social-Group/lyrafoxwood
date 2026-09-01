@@ -1,8 +1,0 @@
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "lyrafoxwood-personal",
-  "compatibility_date": "2026-09-01",
-  "assets": {
-    "directory": "./dist"
-  }
-}
