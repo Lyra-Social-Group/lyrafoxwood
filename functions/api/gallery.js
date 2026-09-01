@@ -103,22 +103,24 @@ function parseDriveEntries(html) {
 
     const names = [
       ...context.matchAll(
-        /(?:[A-Za-z0-9_ .()\-\[\]]+\.(?:png|jpe?g|webp|gif|avif))/gi
+        /(?:[A-Za-z0-9_ .()\-\[\]:]+)(?:\.(?:png|jpe?g|webp|gif|avif))?/gi
       ),
     ]
       .map((item) => ({
         name: decodeHtml(item[0]).trim(),
         position: start + item.index,
       }))
-      .filter((item) => IMAGE_EXTENSIONS.test(item.name))
+      .filter((item) => item.name.length > 0)
 
-    const filename = names.length
+    const rawFilename = names.length
       ? names.sort(
           (a, b) =>
             Math.abs(a.position - match.index) -
             Math.abs(b.position - match.index)
         )[0].name
       : `VRChat Shot ${entries.size + 1}`
+
+    const filename = rawFilename.includes('.') ? rawFilename : `${rawFilename}.png`
 
     if (!entries.has(id)) {
       entries.set(id, {
@@ -210,28 +212,12 @@ function parseDriveEntries(html) {
 }
 
 function buildImageUrl(fileId) {
-  /*
-   * Google Drive thumbnail endpoint.
-   *
-   * IMPORTANT: this endpoint only accepts a single dimension in `sz`
-   * (e.g. `w1000`). Passing a combined `w-h` value (e.g. `w1600-h1200`)
-   * is NOT supported here and causes the request to fail, which is why
-   * images were rendering as blank boxes.
-   */
-
   return `https://drive.google.com/thumbnail?id=${encodeURIComponent(
     fileId
   )}&sz=w1000`
 }
 
 function buildFallbackImageUrl(fileId) {
-  /*
-   * Alternate host for public Drive images. This one DOES accept the
-   * combined `w-h` sizing syntax. Used as a client-side fallback if the
-   * primary thumbnail URL above ever fails to load (e.g. transient
-   * Google-side throttling).
-   */
-
   return `https://lh3.googleusercontent.com/d/$${encodeURIComponent(
     fileId
   )}=w1000-h1000`
@@ -268,11 +254,6 @@ async function fetchFolder(folderId) {
 export async function onRequest(context) {
   const url = new URL(context.request.url)
 
-  /*
-   * IMPORTANT:
-   * The default category is "me", not "Me (Lyra)".
-   */
-
   const category =
     url.searchParams.get('category') || 'me'
 
@@ -308,9 +289,6 @@ export async function onRequest(context) {
       parseDriveEntries(html)
 
     const photos = entries
-      .filter((entry) =>
-        IMAGE_EXTENSIONS.test(entry.filename)
-      )
       .map((entry, index) => ({
         id: `${category}-${entry.id}`,
 
