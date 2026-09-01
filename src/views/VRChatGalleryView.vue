@@ -85,6 +85,7 @@ function preloadPhoto(photo, generation) {
       }
 
       const probe = new Image()
+      probe.referrerPolicy = 'no-referrer'
 
       probe.onload = () => {
         if (generation === loadGeneration) {
@@ -369,6 +370,7 @@ const handleImageError = (event, photo) => {
                 v-if="photo.displaySrc"
                 :src="photo.displaySrc"
                 :alt="photo.title"
+                referrerpolicy="no-referrer"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 @error="(event) => handleImageError(event, photo)"
               />
@@ -424,6 +426,7 @@ const handleImageError = (event, photo) => {
   v-if="photo.displaySrc"
   :src="photo.displaySrc"
   :alt="photo.title"
+  referrerpolicy="no-referrer"
   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
   @error="(event) => handleImageError(event, photo)"
 />
@@ -548,6 +551,7 @@ const handleImageError = (event, photo) => {
               <img
                 :src="activePhoto.displaySrc || activePhoto.src"
                 :alt="activePhoto.title"
+                referrerpolicy="no-referrer"
                 class="max-h-[75vh] w-auto object-contain"
                 @error="(event) => handleImageError(event, activePhoto)"
               />
