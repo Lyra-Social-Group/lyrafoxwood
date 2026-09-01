@@ -1,3 +1,0 @@
-name = "lyrafoxwood"
-main = "src/index.js" # Or your actual entry point path, e.g., functions/api/index.js
-compatibility_date = "2024-01-01"
