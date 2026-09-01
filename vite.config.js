@@ -8,73 +8,69 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       {
-        name: 'google-photos-auto-scraper',
+        name: 'google-drive-auto-scraper',
         configureServer(server) {
           server.middlewares.use('/api/gallery', async (req, res) => {
             const url = new URL(req.url, `http://${req.headers.host}`)
-            const category = url.searchParams.get('category') || 'Me (Lyra)'
+            const category = url.searchParams.get('category') || 'me'
 
-            // Shared album links loaded from .env.local
-            const albumMap = {
-              'Me (Lyra)': env.VITE_ALBUM_ME_LYRA,
-              'Quinnexe & Me': env.VITE_ALBUM_QUINNEXE,
-              'Luna & Me': env.VITE_ALBUM_LUNA,
-              'Furality Ultra': env.VITE_ALBUM_FURALITY,
-              'Syru & Kasuri & Me': env.VITE_ALBUM_SYRU_KASURI,
-              'Me & Uni': env.VITE_ALBUM_UNI,
-              'Me & Lyraboone': env.VITE_ALBUM_LYRABOONE,
+            const folderMap = {
+              'me': env.VITE_DRIVE_ME,
+              'me and confetti': env.VITE_DRIVE_ME_CONFETTI,
+              'me and luna': env.VITE_DRIVE_ME_LUNA,
+              'me and milk': env.VITE_DRIVE_ME_MILK,
+              'Me & Darienfox': env.VITE_DRIVE_ME_DARIENFOX,
+              'Me & Fox': env.VITE_DRIVE_ME_FOX,
+              'Me & Uni': env.VITE_DRIVE_ME_UNI,
+              'Me & Lyraboone': env.VITE_DRIVE_ME_LYRABOONE,
+              'Me & Quinnexe': env.VITE_DRIVE_ME_QUINNEXE,
+              'Syru & Kasuri': env.VITE_DRIVE_SYRU_KASURI,
+              'Furality Ultra': env.VITE_DRIVE_FURALITY_ULTRA,
             }
 
-            let shareLink = albumMap[category]
+            const folderId = folderMap[category]
 
-            if (!shareLink) {
+            if (!folderId) {
               res.setHeader('Content-Type', 'application/json')
               return res.end(JSON.stringify({ category, photos: [] }))
             }
 
-            if (!shareLink.startsWith('http')) {
-              shareLink = `https://photos.app.goo.gl/${shareLink}`
-            }
-
             try {
-              // Fetch shared page source
-              const response = await fetch(shareLink, {
+              const driveUrl = `https://drive.google.com/drive/folders/${folderId}`
+              const response = await fetch(driveUrl, {
                 headers: {
                   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
                 }
               })
               const html = await response.text()
 
-              // Extract direct high-resolution image URLs
-              const imageRegex = /(https:\/\/lh3\.googleusercontent\.com\/pw\/[a-zA-Z0-9_-]+)/g
-              const imageMatches = [...new Set(html.match(imageRegex) || [])]
-
-              // Extract photo timestamps from embedded JSON metadata
-              const dateRegex = /\[(\d{13}),\d+,\d+\]/g
-              const dateMatches = []
+              // Strict regex targeting Drive file IDs and matching only real image filenames
+              const itemRegex = /"([a-zA-Z0-9_-]{28,35})",.*?"([^"]+\.(?:png|jpg|jpeg|webp|PNG|JPG|JPEG|WEBP))"/g
+              const photosMap = new Map()
               let match
-              while ((match = dateRegex.exec(html)) !== null) {
-                dateMatches.push(parseInt(match[1]))
-              }
 
-              // Extract photo filenames if embedded in title meta
-              const titleRegex = /"([^"]+\.(?:png|jpg|jpeg|webp))"/gi
-              const titleMatches = []
-              while ((match = titleRegex.exec(html)) !== null) {
-                titleMatches.push(match[1])
-              }
-
-              const photos = imageMatches.map((baseUrl, index) => {
-                const timestamp = dateMatches[index] ? new Date(dateMatches[index]).toISOString() : new Date().toISOString()
-                const rawName = titleMatches[index] || `VRChat Shot #${index + 1}`
-
-                return {
-                  id: `${category}-${index}`,
-                  filename: rawName,
-                  creationTime: timestamp,
-                  baseUrl: `${baseUrl}=w1600-h1200-no` // Force high-res direct image rendering
+              while ((match = itemRegex.exec(html)) !== null) {
+                const id = match[1]
+                const name = match[2]
+                
+                if (
+                  id !== folderId && 
+                  !id.startsWith('0B') && 
+                  !id.includes('folder') && 
+                  !name.includes('gstatic') && 
+                  !name.includes('google') &&
+                  !photosMap.has(id)
+                ) {
+                  photosMap.set(id, name)
                 }
-              })
+              }
+
+              const photos = Array.from(photosMap.entries()).map(([fileId, fileName]) => ({
+                id: `${category}-${fileId}`,
+                filename: fileName,
+                creationTime: new Date().toISOString(),
+                baseUrl: `https://lh3.googleusercontent.com/d/${fileId}=w1600-h1200`
+              }))
 
               res.setHeader('Content-Type', 'application/json')
               res.end(JSON.stringify({ category, photos }))

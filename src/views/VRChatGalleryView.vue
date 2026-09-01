@@ -6,13 +6,17 @@ const galleryPhotos = ref([])
 const isLoading = ref(false)
 
 const categories = [
-  { id: 'Me (Lyra)', label: '🐾 Me (Lyra)' },
-  { id: 'Quinnexe & Me', label: '🌿 Quinnexe & Me' },
-  { id: 'Luna & Me', label: '🌙 Luna & Me' },
-  { id: 'Furality Ultra', label: '✨ Furality Ultra' },
-  { id: 'Syru & Kasuri & Me', label: '🦊 Syru & Kasuri & Me' },
-  { id: 'Me & Uni', label: '🌲 Me & Uni' },
+  { id: 'me', label: '🐾 Me' },
+  { id: 'me and confetti', label: '🎉 Me & Confetti' },
+  { id: 'me and luna', label: '🌙 Me & Luna' },
+  { id: 'me and milk', label: '🥛 Me & Milk' },
+  { id: 'Me & Darienfox', label: '🦊 Me & Darienfox' },
+  { id: 'Me & Fox', label: '🌲 Me & Fox' },
+  { id: 'Me & Uni', label: '✨ Me & Uni' },
   { id: 'Me & Lyraboone', label: '🌌 Me & Lyraboone' },
+  { id: 'Me & Quinnexe', label: '🌿 Me & Quinnexe' },
+  { id: 'Syru & Kasuri', label: '🍂 Syru & Kasuri' },
+  { id: 'Furality Ultra', label: '💫 Furality Ultra' },
 ]
 
 // Dynamic fetcher that pulls photo items from backend API
