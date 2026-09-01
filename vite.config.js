@@ -270,7 +270,12 @@ async function loadDrivePhotos(
       baseUrl:
         `https://drive.google.com/thumbnail?id=` +
         `${encodeURIComponent(entry.id)}` +
-        `&sz=w1600-h1200`,
+        `&sz=w1000`,
+
+      fallbackUrl:
+        `https://lh3.googleusercontent.com/d/` +
+        `${encodeURIComponent(entry.id)}` +
+        `=w1000-h1000`,
 
       driveUrl:
         `https://drive.google.com/file/d/` +

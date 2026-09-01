@@ -20,10 +20,106 @@ const categories = [
   { id: 'Furality Ultra', label: '💫 Furality Ultra' },
 ]
 
+/*
+ * Google Drive's public /thumbnail endpoint rate-limits bursts of
+ * simultaneous hotlinked requests. A single request works fine, but
+ * loading a whole grid of <img> tags at once (all firing requests in
+ * parallel) gets throttled and every image comes back broken.
+ *
+ * To work around this, images are preloaded through a small
+ * concurrency-limited queue (a couple requests in flight at a time,
+ * with a short gap between batches) rather than letting the browser
+ * fire them all at once. Each <img> is only mounted in the DOM once
+ * its request has actually succeeded, so the on-page image loads
+ * instantly from the browser cache.
+ */
+
+function createImageLoadQueue(concurrency = 2, delayMs = 200) {
+  let active = 0
+  const queue = []
+
+  const runNext = () => {
+    if (active >= concurrency || queue.length === 0) {
+      return
+    }
+
+    const task = queue.shift()
+    active++
+
+    task().finally(() => {
+      active--
+      setTimeout(runNext, delayMs)
+    })
+  }
+
+  return {
+    enqueue(task) {
+      queue.push(task)
+      runNext()
+    },
+    clear() {
+      queue.length = 0
+    },
+  }
+}
+
+const imageQueue = createImageLoadQueue(2, 200)
+
+// Bumped every time a new category is fetched, so image loads left
+// over from a previous (abandoned) category don't touch stale photo
+// objects or waste concurrency slots.
+let loadGeneration = 0
+
+function preloadPhoto(photo, generation) {
+  return new Promise((resolve) => {
+    const attempt = (src, isFallback) => {
+      if (generation !== loadGeneration) {
+        resolve()
+        return
+      }
+
+      if (!src) {
+        photo.loadFailed = true
+        resolve()
+        return
+      }
+
+      const probe = new Image()
+
+      probe.onload = () => {
+        if (generation === loadGeneration) {
+          photo.displaySrc = src
+        }
+        resolve()
+      }
+
+      probe.onerror = () => {
+        if (!isFallback && photo.fallbackSrc) {
+          attempt(photo.fallbackSrc, true)
+          return
+        }
+
+        if (generation === loadGeneration) {
+          photo.loadFailed = true
+        }
+        resolve()
+      }
+
+      probe.src = src
+    }
+
+    attempt(photo.src, false)
+  })
+}
+
 const fetchAlbumPhotos = async (categoryName) => {
   isLoading.value = true
   galleryPhotos.value = []
   galleryError.value = ''
+
+  loadGeneration += 1
+  const currentGeneration = loadGeneration
+  imageQueue.clear()
 
   try {
     const res = await fetch(
@@ -75,6 +171,10 @@ const fetchAlbumPhotos = async (categoryName) => {
         fallbackSrc:
           photo.fallbackUrl || null,
 
+        // Populated once the queued preload for this photo succeeds.
+        displaySrc: '',
+        loadFailed: false,
+
         driveUrl:
           photo.driveUrl || null,
 
@@ -91,6 +191,12 @@ const fetchAlbumPhotos = async (categoryName) => {
               : 'rotate-1',
       })
     )
+
+    galleryPhotos.value.forEach((photo) => {
+      imageQueue.enqueue(() =>
+        preloadPhoto(photo, currentGeneration)
+      )
+    })
   } catch (err) {
     console.error(
       'Failed to load gallery photos:',
@@ -129,21 +235,18 @@ const closeLightbox = () => {
   activePhoto.value = null
 }
 
+// Safety net for the lightbox: if a photo is clicked before its queued
+// preload finishes, this loads it directly (a single one-off request
+// isn't what triggers Google's rate limiting).
 const handleImageError = (event, photo) => {
   const img = event.target
 
-  // First failure: retry once with the fallback host.
   if (photo.fallbackSrc && img.src !== photo.fallbackSrc) {
-    console.warn(
-      'Primary gallery image failed, retrying with fallback:',
-      photo.src
-    )
     img.src = photo.fallbackSrc
     return
   }
 
-  // Fallback also failed (or none available): give up gracefully.
-  console.error('Failed to load gallery image:', photo.src)
+  photo.loadFailed = true
   img.style.display = 'none'
 }
 </script>
@@ -260,15 +363,30 @@ const handleImageError = (event, photo) => {
           >
 
             <div
-              class="aspect-[4/3] w-full overflow-hidden bg-slate-900"
+              class="aspect-[4/3] w-full overflow-hidden bg-slate-900 relative"
             >
-<img 
-  :src="photo.src"
-  :alt="photo.title"
-  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-  loading="lazy"
-  @error="(event) => handleImageError(event, photo)"
-/>
+              <img
+                v-if="photo.displaySrc"
+                :src="photo.displaySrc"
+                :alt="photo.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                @error="(event) => handleImageError(event, photo)"
+              />
+
+              <div
+                v-else
+                class="absolute inset-0 flex items-center justify-center"
+              >
+                <i
+                  v-if="!photo.loadFailed"
+                  class="fa-solid fa-spinner fa-spin text-emerald-500/40 text-xl"
+                ></i>
+
+                <i
+                  v-else
+                  class="fa-solid fa-image-slash text-emerald-500/30 text-xl"
+                ></i>
+              </div>
             </div>
 
             <div
@@ -302,13 +420,28 @@ const handleImageError = (event, photo) => {
               class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-950 relative"
             >
 
-<img 
-  :src="photo.src"
+<img
+  v-if="photo.displaySrc"
+  :src="photo.displaySrc"
   :alt="photo.title"
   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-  loading="lazy"
   @error="(event) => handleImageError(event, photo)"
 />
+
+              <div
+                v-else
+                class="absolute inset-0 flex items-center justify-center"
+              >
+                <i
+                  v-if="!photo.loadFailed"
+                  class="fa-solid fa-spinner fa-spin text-cyan-300/50 text-xl"
+                ></i>
+
+                <i
+                  v-else
+                  class="fa-solid fa-image-slash text-cyan-300/40 text-xl"
+                ></i>
+              </div>
 
               <div
                 class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent"
@@ -413,7 +546,7 @@ const handleImageError = (event, photo) => {
             >
 
               <img
-                :src="activePhoto.src"
+                :src="activePhoto.displaySrc || activePhoto.src"
                 :alt="activePhoto.title"
                 class="max-h-[75vh] w-auto object-contain"
                 @error="(event) => handleImageError(event, activePhoto)"
