@@ -9,7 +9,16 @@ export default {
       return handleGallery({ request, env, ctx })
     }
 
-    // Serve frontend static assets and handle SPA routing via Workers Asset Binding
-    return env.ASSETS.fetch(request)
+    // Attempt to fetch the static asset first
+    let response = await env.ASSETS.fetch(request)
+
+    // If the asset doesn't exist (e.g. hitting /about directly) and it's not an API or file request,
+    // fallback to serving index.html so vue-router can handle the path on the client side.
+    if (response.status === 404 && !url.pathname.includes('.')) {
+      const indexRequest = new Request(new URL('/', request.url), request)
+      response = await env.ASSETS.fetch(indexRequest)
+    }
+
+    return response
   },
 }
