@@ -9,7 +9,30 @@ interface PcItem {
 }
 
 const activeCategory = ref<string>('all')
+const loading = ref<boolean>(false)
 
+// Stripe $1.00 Checkout Handler
+const handleCheckout = async () => {
+  loading.value = true
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    const data = await res.json()
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      alert('Checkout error: ' + (data.error || 'Failed to start Stripe session'))
+    }
+  } catch (err) {
+    alert('Payment request failed.')
+  } finally {
+    loading.value = false
+  }
+}
+
+// Complete PCPartPicker list with commentary
 const pcList = ref<PcItem[]>([
   // Core Hardware
   { 
@@ -58,7 +81,7 @@ const pcList = ref<PcItem[]>([
     category: 'core', 
     name: 'be quiet! Straight Power 11 3500W 80+ Gold PSU', 
     price: '$1,008.00', 
-    commentary: 'Will cause your neighborhood power grid to dim every time you open a Excel spreadsheet.' 
+    commentary: 'Will cause your neighborhood power grid to dim every time you open an Excel spreadsheet.' 
   },
   { 
     category: 'core', 
@@ -84,7 +107,7 @@ const pcList = ref<PcItem[]>([
     category: 'storage', 
     name: 'Mushkin Source HC 16 TB 2.5" SSD (x3 Array)', 
     price: '$48,372.90', 
-    commentary: 'Cost more than a brand-new Ford Mustang. Used strictly for meme storage.' 
+    commentary: 'Costs more than a brand-new Ford Mustang. Used strictly for meme storage.' 
   },
   { 
     category: 'storage', 
@@ -222,6 +245,27 @@ const filteredItems = computed(() => {
         </div>
       </header>
 
+      <!-- $1.00 Stripe Checkout Widget -->
+      <section class="bg-emerald-100/80 dark:bg-slate-900/90 border border-emerald-300 dark:border-emerald-500/40 rounded-2xl p-6 text-center space-y-4 shadow-xl">
+        <h3 class="font-mono text-lg font-bold text-emerald-950 dark:text-emerald-300 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-dollar-sign text-yellow-400"></i>
+          Support The Build Tier
+        </h3>
+        <p class="text-xs font-sans text-emerald-900/80 dark:text-slate-300 max-w-md mx-auto">
+          Donate $1.00 via Stripe to buy a single microscopic roll of light-year bubble wrap for this setup.
+        </p>
+
+        <button
+          @click="handleCheckout"
+          :disabled="loading"
+          class="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-mono font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-95 flex items-center justify-center gap-2 mx-auto cursor-pointer"
+        >
+          <i v-if="loading" class="fa-solid fa-spinner animate-spin"></i>
+          <i v-else class="fa-solid fa-credit-card"></i>
+          {{ loading ? 'Redirecting to Stripe...' : 'Checkout for $1.00' }}
+        </button>
+      </section>
+
       <!-- Category Filter Buttons -->
       <nav class="flex flex-wrap gap-2 border-b border-emerald-200/60 dark:border-emerald-900/40 pb-4">
         <button
@@ -229,7 +273,7 @@ const filteredItems = computed(() => {
           :key="cat.id"
           @click="activeCategory = cat.id"
           :class="[
-            'px-4 py-2 rounded-lg font-mono text-xs sm:text-sm flex items-center gap-2 transition-all duration-200',
+            'px-4 py-2 rounded-lg font-mono text-xs sm:text-sm flex items-center gap-2 transition-all duration-200 cursor-pointer',
             activeCategory === cat.id
               ? 'bg-emerald-600 dark:bg-emerald-600 text-white shadow-md'
               : 'bg-emerald-100/60 dark:bg-slate-900/60 text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/70 dark:hover:bg-slate-800'
