@@ -1,17 +1,22 @@
-export async function onRequestPost(context) {
+export async function onRequest(context) {
   const { request, env } = context
 
-  // 1. Verify API Key
+  if (request.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method Not Allowed' }),
+      { status: 405, headers: { 'Content-Type': 'application/json' } }
+    )
+  }
+
   const stripeSecretKey = env.STRIPE_SECRET_KEY
   if (!stripeSecretKey) {
     return new Response(
-      JSON.stringify({ error: 'STRIPE_SECRET_KEY is missing from Cloudflare Environment Variables.' }),
+      JSON.stringify({ error: 'STRIPE_SECRET_KEY is missing from environment variables.' }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   }
 
   try {
-    // 2. Parse Request Body
     const body = await request.json().catch(() => ({}))
     const donationAmount = Number(body.amount)
 
@@ -25,11 +30,10 @@ export async function onRequestPost(context) {
     const origin = new URL(request.url).origin
     const unitAmountCents = Math.round(donationAmount * 100)
 
-    // 3. Form Stripe Request Payload
     const params = new URLSearchParams()
     params.append('mode', 'payment')
-    params.append('success_url', `${origin}/#/donate/success?session_id={CHECKOUT_SESSION_ID}`)
-    params.append('cancel_url', `${origin}/#/donate/cancel`)
+    params.append('success_url', `${origin}/donate/success?session_id={CHECKOUT_SESSION_ID}`)
+    params.append('cancel_url', `${origin}/donate/cancel`)
     params.append('billing_address_collection', 'auto')
 
     params.append('line_items[0][price_data][currency]', 'usd')
@@ -38,7 +42,6 @@ export async function onRequestPost(context) {
     params.append('line_items[0][price_data][product_data][description]', 'Support ongoing projects, tech infrastructure, and content creation.')
     params.append('line_items[0][quantity]', '1')
 
-    // 4. Send request to Stripe
     const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
@@ -52,7 +55,7 @@ export async function onRequestPost(context) {
 
     if (!stripeResponse.ok) {
       return new Response(
-        JSON.stringify({ error: `Stripe API Error (${stripeResponse.status}): ${session.error?.message || 'Unknown error'}` }),
+        JSON.stringify({ error: `Stripe API Error (${stripeResponse.status}): ${session.error?.message || 'Checkout failed'}` }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       )
     }
@@ -63,7 +66,7 @@ export async function onRequestPost(context) {
     )
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: `Cloudflare Function Crash: ${err.message}` }),
+      JSON.stringify({ error: `Handler Error: ${err.message}` }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   }

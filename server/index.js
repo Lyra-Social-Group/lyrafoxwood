@@ -1,4 +1,5 @@
 import { onRequest as handleGallery } from '../functions/api/gallery.js'
+import { onRequest as handleDonationCheckout } from '../functions/api/create-donation-checkout.js'
 
 export default {
   async fetch(request, env, ctx) {
@@ -7,6 +8,11 @@ export default {
     // Route API requests directly to your gallery function
     if (url.pathname.startsWith('/api/gallery')) {
       return handleGallery({ request, env, ctx })
+    }
+
+    // Route API requests for donation checkout
+    if (url.pathname === '/api/create-donation-checkout') {
+      return handleDonationCheckout({ request, env, ctx })
     }
 
     // Attempt to fetch the static asset first
