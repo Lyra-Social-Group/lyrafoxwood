@@ -141,7 +141,7 @@
         >
           Links
         </router-link>
-                  <router-link 
+          <router-link 
             to="/gallery" 
             class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
             active-class="text-cyan-600 dark:text-cyan-400 font-bold"

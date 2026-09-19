@@ -44,6 +44,11 @@ const routes = [
     component: VRChatGalleryView,
     meta: { title: 'VRC Gallery - Lyra Foxwood' }
   },
+  {
+  path: '/ultament-pc',
+  name: 'ultament-pc',
+  component: () => import('../views/UltamentPcView.vue')
+},
 
   // Catch-all route (MUST be last)
   { 
