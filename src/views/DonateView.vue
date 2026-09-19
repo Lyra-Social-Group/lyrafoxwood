@@ -49,17 +49,17 @@ async function donate() {
     try {
       data = text ? JSON.parse(text) : {}
     } catch {
-      throw new Error(`Server returned unexpected response (Status ${res.status}).`)
+      throw new Error(`Server returned non-JSON response (${res.status}): ${text.slice(0, 100)}`)
     }
 
-    if (!res.ok) {
+    if (!res.ok || data.error) {
       throw new Error(data.error || `Checkout failed with status ${res.status}`)
     }
 
     if (data.url) {
       window.location.href = data.url
     } else {
-      throw new Error('No checkout URL returned from Stripe.')
+      throw new Error('No checkout URL was returned by Stripe.')
     }
   } catch (err) {
     error.value = err.message
@@ -128,12 +128,12 @@ async function donate() {
           </div>
         </div>
 
-        <!-- Error -->
-        <div v-if="error" class="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-500 font-mono">
+        <!-- Error Container -->
+        <div v-if="error" class="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-500 font-mono break-words">
           {{ error }}
         </div>
 
-        <!-- Submit -->
+        <!-- Submit Button -->
         <button
           type="button"
           :disabled="loading"
