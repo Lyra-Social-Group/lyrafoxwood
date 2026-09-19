@@ -11,7 +11,7 @@ interface PcItem {
 const activeCategory = ref<string>('all')
 const loading = ref<boolean>(false)
 
-// Stripe $1.00 Checkout Handler
+// Stripe $1.00 Direct Redirect Checkout Handler
 const handleCheckout = async () => {
   loading.value = true
   try {
@@ -19,14 +19,27 @@ const handleCheckout = async () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     })
-    const data = await res.json()
-    if (data.url) {
+    
+    const responseText = await res.text()
+
+    if (!responseText) {
+      throw new Error('Server returned an empty response. If testing locally, run using Wrangler or test on Cloudflare Pages.')
+    }
+
+    let data: any
+    try {
+      data = JSON.parse(responseText)
+    } catch {
+      throw new Error(`Invalid response (HTTP ${res.status}). Received text: "${responseText.substring(0, 60)}..."`)
+    }
+
+    if (res.ok && data.url) {
       window.location.href = data.url
     } else {
-      alert('Checkout error: ' + (data.error || 'Failed to start Stripe session'))
+      alert('Stripe Error: ' + (data.error || 'HTTP ' + res.status))
     }
-  } catch (err) {
-    alert('Payment request failed.')
+  } catch (err: any) {
+    alert(err.message || 'Network Error: Could not connect to /api/checkout.')
   } finally {
     loading.value = false
   }
@@ -245,11 +258,11 @@ const filteredItems = computed(() => {
         </div>
       </header>
 
-      <!-- $1.00 Stripe Checkout Widget -->
+      <!-- $1.00 Stripe Checkout Button Widget -->
       <section class="bg-emerald-100/80 dark:bg-slate-900/90 border border-emerald-300 dark:border-emerald-500/40 rounded-2xl p-6 text-center space-y-4 shadow-xl">
         <h3 class="font-mono text-lg font-bold text-emerald-950 dark:text-emerald-300 flex items-center justify-center gap-2">
           <i class="fa-solid fa-dollar-sign text-yellow-400"></i>
-          Support The Build Tier
+          Support The Build Tier ($1.00)
         </h3>
         <p class="text-xs font-sans text-emerald-900/80 dark:text-slate-300 max-w-md mx-auto">
           Donate $1.00 via Stripe to buy a single microscopic roll of light-year bubble wrap for this setup.
