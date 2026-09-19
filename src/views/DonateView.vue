@@ -9,7 +9,7 @@ const error = ref('')
 
 const amount = computed(() => {
   if (selectedAmount.value === null) {
-    return Number(customAmount.value)
+    return Number(customAmount.value) || 0
   }
   return selectedAmount.value
 })
@@ -43,10 +43,24 @@ async function donate() {
       body: JSON.stringify({ amount: donationAmount })
     })
 
-    const data = await res.json()
+    const text = await res.text()
+    let data = {}
 
-    if (!res.ok) throw new Error(data.error || 'Checkout failed.')
-    if (data.url) window.location.href = data.url
+    try {
+      data = text ? JSON.parse(text) : {}
+    } catch {
+      throw new Error(`Server returned unexpected response (Status ${res.status}).`)
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || `Checkout failed with status ${res.status}`)
+    }
+
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      throw new Error('No checkout URL returned from Stripe.')
+    }
   } catch (err) {
     error.value = err.message
     loading.value = false

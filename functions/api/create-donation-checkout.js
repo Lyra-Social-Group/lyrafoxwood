@@ -1,9 +1,6 @@
-import Stripe from 'stripe'
-
 export async function onRequestPost(context) {
   const { request, env } = context
 
-  // Check secret key
   const stripeSecretKey = env.STRIPE_SECRET_KEY
   if (!stripeSecretKey) {
     return new Response(
@@ -23,28 +20,38 @@ export async function onRequestPost(context) {
       )
     }
 
-    const stripe = new Stripe(stripeSecretKey)
     const origin = new URL(request.url).origin
+    const unitAmountCents = Math.round(donationAmount * 100)
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Donation to Lyra Foxwood',
-              description: 'Support ongoing projects, tech infrastructure, and content creation.'
-            },
-            unit_amount: Math.round(donationAmount * 100)
-          },
-          quantity: 1
-        }
-      ],
-      success_url: `${origin}/donate/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/donate/cancel`,
-      billing_address_collection: 'auto'
+    const params = new URLSearchParams()
+    params.append('mode', 'payment')
+    params.append('success_url', `${origin}/donate/success?session_id={CHECKOUT_SESSION_ID}`)
+    params.append('cancel_url', `${origin}/donate/cancel`)
+    params.append('billing_address_collection', 'auto')
+    
+    params.append('line_items[0][price_data][currency]', 'usd')
+    params.append('line_items[0][price_data][unit_amount]', unitAmountCents.toString())
+    params.append('line_items[0][price_data][product_data][name]', 'Donation to Lyra Foxwood')
+    params.append('line_items[0][price_data][product_data][description]', 'Support ongoing projects, tech infrastructure, and content creation.')
+    params.append('line_items[0][quantity]', '1')
+
+    const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${stripeSecretKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: params.toString()
     })
+
+    const session = await stripeResponse.json()
+
+    if (!stripeResponse.ok) {
+      return new Response(
+        JSON.stringify({ error: session.error?.message || 'Stripe Checkout Session failed.' }),
+        { status: stripeResponse.status, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
 
     return new Response(
       JSON.stringify({ url: session.url }),
@@ -52,7 +59,7 @@ export async function onRequestPost(context) {
     )
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err.message || 'Stripe error occurred.' }),
+      JSON.stringify({ error: err.message || 'Internal error' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     )
   }
