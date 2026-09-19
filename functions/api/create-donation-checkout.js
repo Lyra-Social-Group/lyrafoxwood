@@ -3,11 +3,11 @@ import Stripe from 'stripe'
 export async function onRequestPost(context) {
   const { request, env } = context
 
-  // Access environment secret set in Cloudflare / .dev.vars
+  // Check secret key
   const stripeSecretKey = env.STRIPE_SECRET_KEY
   if (!stripeSecretKey) {
     return new Response(
-      JSON.stringify({ error: 'Stripe API key is missing.' }),
+      JSON.stringify({ error: 'STRIPE_SECRET_KEY is missing from Cloudflare environment variables.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     )
   }
@@ -41,8 +41,8 @@ export async function onRequestPost(context) {
           quantity: 1
         }
       ],
-      success_url: `${origin}/#/donate/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/#/donate/cancel`,
+      success_url: `${origin}/donate/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/donate/cancel`,
       billing_address_collection: 'auto'
     })
 
@@ -52,7 +52,7 @@ export async function onRequestPost(context) {
     )
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err.message || 'Internal Server Error' }),
+      JSON.stringify({ error: err.message || 'Stripe error occurred.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     )
   }
