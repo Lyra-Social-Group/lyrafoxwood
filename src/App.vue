@@ -8,56 +8,124 @@
           Lyra Foxwood
         </router-link>
 
-        <nav class="hidden md:flex space-x-4 text-sm font-medium">
+        <!-- Desktop Navigation with Dropdowns -->
+        <nav class="hidden md:flex space-x-2 lg:space-x-4 text-sm font-medium items-center">
+          
           <router-link 
             to="/" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+            class="px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
             active-class="text-cyan-600 dark:text-cyan-400 font-bold"
           >
             Home
           </router-link>
-          <router-link 
-            to="/about" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-          >
-            About
-          </router-link>
-          <router-link 
-            to="/skills" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-          >
-            Skills & Certifications
-          </router-link>
-          <router-link 
-            to="/music" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-          >
-            Music
-          </router-link>
-          <router-link 
-            to="/links" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-          >
-            Links
-          </router-link>
-          <router-link 
-            to="/gallery" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-          >
-            VRC Gallery
-          </router-link>
-          <router-link 
-            to="/donate" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-          >
-            Donate
-          </router-link>
+
+          <!-- Dropdown: About & Info -->
+          <div class="relative group" @mouseleave="activeDropdown = null">
+            <button 
+              @click="toggleDropdown('about')"
+              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none"
+            >
+              <span>About</span>
+              <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': activeDropdown === 'about' }"></i>
+            </button>
+
+            <div 
+              v-show="activeDropdown === 'about'" 
+              class="absolute left-0 mt-2 w-48 rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2 z-50"
+            >
+              <router-link 
+                to="/about" 
+                @click="activeDropdown = null"
+                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+              >
+                About Me
+              </router-link>
+              <router-link 
+                to="/skills" 
+                @click="activeDropdown = null"
+                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+              >
+                Skills & Certifications
+              </router-link>
+            </div>
+          </div>
+
+          <!-- Dropdown: Media & Projects -->
+          <div class="relative group" @mouseleave="activeDropdown = null">
+            <button 
+              @click="toggleDropdown('media')"
+              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none"
+            >
+              <span>Projects & Media</span>
+              <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': activeDropdown === 'media' }"></i>
+            </button>
+
+            <div 
+              v-show="activeDropdown === 'media'" 
+              class="absolute left-0 mt-2 w-52 rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2 z-50"
+            >
+              <router-link 
+                to="/music" 
+                @click="activeDropdown = null"
+                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+              >
+                Music Hub
+              </router-link>
+              <router-link 
+                to="/gallery" 
+                @click="activeDropdown = null"
+                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+              >
+                VRC Gallery
+              </router-link>
+              <router-link 
+                to="/ultament-pc" 
+                @click="activeDropdown = null"
+                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+              >
+                Ultimate PC Build
+              </router-link>
+            </div>
+          </div>
+
+          <!-- Dropdown: Community & Links -->
+          <div class="relative group" @mouseleave="activeDropdown = null">
+            <button 
+              @click="toggleDropdown('community')"
+              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none"
+            >
+              <span>Community</span>
+              <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': activeDropdown === 'community' }"></i>
+            </button>
+
+            <div 
+              v-show="activeDropdown === 'community'" 
+              class="absolute left-0 mt-2 w-48 rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2 z-50"
+            >
+              <router-link 
+                to="/links" 
+                @click="activeDropdown = null"
+                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+              >
+                Links & Socials
+              </router-link>
+              <router-link 
+                to="/donate" 
+                @click="activeDropdown = null"
+                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+              >
+                Donate
+              </router-link>
+            </div>
+          </div>
+
         </nav>
       </div>
       
@@ -103,6 +171,7 @@
       </div>
     </header>
 
+    <!-- Mobile Navigation Drawer -->
     <div 
       v-if="mobileMenuOpen" 
       class="md:hidden bg-emerald-100/95 dark:bg-slate-950/95 border-b border-emerald-200 dark:border-emerald-900/60 px-6 py-4 space-y-4 backdrop-blur-md transition-colors duration-300"
@@ -116,54 +185,77 @@
         >
           Home
         </router-link>
-        <router-link 
-          to="/about" 
-          @click="mobileMenuOpen = false"
-          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
-          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-        >
-          About
-        </router-link>
-        <router-link 
-          to="/skills" 
-          @click="mobileMenuOpen = false"
-          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
-          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-        >
-          Skills & Certifications
-        </router-link>
-        <router-link 
-          to="/music" 
-          @click="mobileMenuOpen = false"
-          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
-          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-        >
-          Music
-        </router-link>
-        <router-link 
-          to="/links" 
-          @click="mobileMenuOpen = false"
-          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
-          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-        >
-          Links
-        </router-link>
-        <router-link 
-          to="/gallery" 
-          @click="mobileMenuOpen = false"
-          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
-          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-        >
-          VRC Gallery
-        </router-link>
-        <router-link 
-          to="/donate" 
-          @click="mobileMenuOpen = false"
-          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
-          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-        >
-          Donate
-        </router-link>
+
+        <!-- Mobile Accordion: About -->
+        <div class="space-y-2">
+          <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 pt-2">About</div>
+          <router-link 
+            to="/about" 
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            About Me
+          </router-link>
+          <router-link 
+            to="/skills" 
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            Skills & Certifications
+          </router-link>
+        </div>
+
+        <!-- Mobile Accordion: Projects & Media -->
+        <div class="space-y-2">
+          <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 pt-2">Projects & Media</div>
+          <router-link 
+            to="/music" 
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            Music
+          </router-link>
+          <router-link 
+            to="/gallery" 
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            VRC Gallery
+          </router-link>
+          <router-link 
+            to="/ultament-pc" 
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            Ultimate PC Setup
+          </router-link>
+        </div>
+
+        <!-- Mobile Accordion: Community -->
+        <div class="space-y-2">
+          <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 pt-2">Community</div>
+          <router-link 
+            to="/links" 
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            Links & Socials
+          </router-link>
+          <router-link 
+            to="/donate" 
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            Donate
+          </router-link>
+        </div>
       </nav>
 
       <div class="pt-3 border-t border-emerald-200 dark:border-emerald-900/60 flex flex-wrap gap-4 text-emerald-900 dark:text-emerald-200 text-lg">
@@ -225,6 +317,15 @@ import CookieBanner from './components/CookieBanner.vue'
 
 const isDark = ref(false)
 const mobileMenuOpen = ref(false)
+const activeDropdown = ref(null)
+
+const toggleDropdown = (name) => {
+  if (activeDropdown.value === name) {
+    activeDropdown.value = null
+  } else {
+    activeDropdown.value = name
+  }
+}
 
 const toggleDarkMode = () => {
   isDark.value = !isDark.value
