@@ -9,12 +9,43 @@ interface PcItem {
 }
 
 const activeCategory = ref<string>('all')
+const loading = ref(false)
+const error = ref('')
 
-// Your official $1.00 Stripe Payment Link
-const stripePaymentLink = 'https://buy.stripe.com/14A8wP9dI27p29I5yv0sU00'
+// Built-in Stripe Checkout Handler
+async function handleBuiltInCheckout() {
+  error.value = ''
+  loading.value = true
 
-const handleRedirect = () => {
-  window.location.href = stripePaymentLink
+  try {
+    const res = await fetch('/api/create-donation-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: 1.00 })
+    })
+
+    const text = await res.text()
+    let data: { url?: string; error?: string } = {}
+
+    try {
+      data = text ? JSON.parse(text) : {}
+    } catch {
+      throw new Error(`Server returned non-JSON response (${res.status}).`)
+    }
+
+    if (!res.ok || data.error) {
+      throw new Error(data.error || `Checkout failed with status ${res.status}`)
+    }
+
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      throw new Error('No checkout URL was returned by Stripe.')
+    }
+  } catch (err: any) {
+    error.value = err.message || 'Something went wrong during checkout.'
+    loading.value = false
+  }
 }
 
 // Complete PCPartPicker list with commentary
@@ -273,7 +304,7 @@ const filteredItems = computed(() => {
         </div>
       </section>
 
-      <!-- $1.00 Direct Redirect Checkout Button Section (Bottom) -->
+      <!-- $1.00 Built-In API Stripe Checkout Section (Bottom) -->
       <section class="bg-emerald-100/80 dark:bg-slate-900/90 border border-emerald-300 dark:border-emerald-500/40 rounded-2xl p-6 text-center space-y-4 shadow-xl">
         <h3 class="font-mono text-lg font-bold text-emerald-950 dark:text-emerald-300 flex items-center justify-center gap-2">
           <i class="fa-solid fa-dollar-sign text-yellow-400"></i>
@@ -283,12 +314,19 @@ const filteredItems = computed(() => {
           Donate $1.00 via Stripe to buy a single microscopic roll of light-year bubble wrap for this setup.
         </p>
 
+        <!-- Error Message Container -->
+        <div v-if="error" class="max-w-md mx-auto rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-500 font-mono break-words">
+          {{ error }}
+        </div>
+
         <button
-          @click="handleRedirect"
-          class="bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-95 flex items-center justify-center gap-2 mx-auto cursor-pointer"
+          @click="handleBuiltInCheckout"
+          :disabled="loading"
+          class="bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto cursor-pointer"
         >
           <i class="fa-solid fa-credit-card"></i>
-          Checkout for $1.00
+          <span v-if="!loading">Checkout for $1.00</span>
+          <span v-else>Redirecting to Stripe...</span>
         </button>
       </section>
 
