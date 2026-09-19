@@ -45,10 +45,29 @@ const routes = [
     meta: { title: 'VRC Gallery - Lyra Foxwood' }
   },
   {
-  path: '/ultament-pc',
-  name: 'ultament-pc',
-  component: () => import('../views/UltamentPcView.vue')
-},
+    path: '/ultament-pc',
+    name: 'ultament-pc',
+    component: () => import('../views/UltamentPcView.vue'),
+    meta: { title: 'Ultimate PC Setup - Lyra Foxwood' }
+  },
+  {
+    path: '/donate',
+    name: 'Donate',
+    component: () => import('../views/DonateView.vue'),
+    meta: { title: 'Donate - Lyra Foxwood' }
+  },
+  {
+    path: '/donate/success',
+    name: 'DonateSuccess',
+    component: () => import('../views/DonateSuccessView.vue'),
+    meta: { title: 'Thank You! - Lyra Foxwood' }
+  },
+  {
+    path: '/donate/cancel',
+    name: 'DonateCancel',
+    component: () => import('../views/DonateCancelView.vue'),
+    meta: { title: 'Donation Cancelled - Lyra Foxwood' }
+  },
 
   // Catch-all route (MUST be last)
   { 

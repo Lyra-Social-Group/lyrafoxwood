@@ -51,6 +51,13 @@
           >
             VRC Gallery
           </router-link>
+          <router-link 
+            to="/donate" 
+            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+          >
+            Donate
+          </router-link>
         </nav>
       </div>
       
@@ -141,13 +148,22 @@
         >
           Links
         </router-link>
-          <router-link 
-            to="/gallery" 
-            class="text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-          >
-            VRC Gallery
-          </router-link>
+        <router-link 
+          to="/gallery" 
+          @click="mobileMenuOpen = false"
+          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
+          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+        >
+          VRC Gallery
+        </router-link>
+        <router-link 
+          to="/donate" 
+          @click="mobileMenuOpen = false"
+          class="text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors py-1"
+          active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+        >
+          Donate
+        </router-link>
       </nav>
 
       <div class="pt-3 border-t border-emerald-200 dark:border-emerald-900/60 flex flex-wrap gap-4 text-emerald-900 dark:text-emerald-200 text-lg">
