@@ -4,13 +4,13 @@ export async function onRequestPost(context) {
 
     if (!secretKey) {
       return new Response(
-        JSON.stringify({ error: 'STRIPE_SECRET_KEY environment variable is missing.' }),
+        JSON.stringify({ error: 'STRIPE_SECRET_KEY is missing.' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       )
     }
 
-    // Fallback to localhost:5173 or lyrafoxwood.app depending on request context
-    const origin = context.request.headers.get('origin') || new URL(context.request.url).origin
+    // Capture requesting origin for local testing & live site
+    const requestHost = context.request.headers.get('origin') || new URL(context.request.url).origin
 
     const bodyParams = new URLSearchParams()
     bodyParams.append('ui_mode', 'embedded_page')
@@ -20,7 +20,7 @@ export async function onRequestPost(context) {
     bodyParams.append('line_items[0][price_data][product_data][description]', 'Support the hyper-dimensional build!')
     bodyParams.append('line_items[0][price_data][unit_amount]', '100') // $1.00 USD
     bodyParams.append('line_items[0][quantity]', '1')
-    bodyParams.append('return_url', `${origin}/ultament-pc?session_id={CHECKOUT_SESSION_ID}`)
+    bodyParams.append('return_url', `${requestHost}/ultament-pc?session_id={CHECKOUT_SESSION_ID}`)
 
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
