@@ -9,18 +9,18 @@ export async function onRequestPost(context) {
       )
     }
 
-    // Capture requesting origin for local testing & live site
-    const requestHost = context.request.headers.get('origin') || new URL(context.request.url).origin
+    const domain = new URL(context.request.url).origin
 
     const bodyParams = new URLSearchParams()
+    // Changed 'embedded' -> 'embedded_page' as required by API version 2026-08-26.dahlia
     bodyParams.append('ui_mode', 'embedded_page')
     bodyParams.append('mode', 'payment')
     bodyParams.append('line_items[0][price_data][currency]', 'usd')
     bodyParams.append('line_items[0][price_data][product_data][name]', 'The Ultament PC Build Supporter Tier')
     bodyParams.append('line_items[0][price_data][product_data][description]', 'Support the hyper-dimensional build!')
-    bodyParams.append('line_items[0][price_data][unit_amount]', '100') // $1.00 USD
+    bodyParams.append('line_items[0][price_data][unit_amount]', '100')
     bodyParams.append('line_items[0][quantity]', '1')
-    bodyParams.append('return_url', `${requestHost}/ultament-pc?session_id={CHECKOUT_SESSION_ID}`)
+    bodyParams.append('return_url', `${domain}/ultament-pc?session_id={CHECKOUT_SESSION_ID}`)
 
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
