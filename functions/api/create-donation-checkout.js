@@ -5,18 +5,18 @@ export async function onRequestPost(context) {
   if (!stripeSecretKey) {
     return new Response(
       JSON.stringify({ error: 'STRIPE_SECRET_KEY is missing from Cloudflare environment variables.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   }
 
   try {
-    const { amount } = await request.json()
-    const donationAmount = Number(amount)
+    const body = await request.json().catch(() => ({}))
+    const donationAmount = Number(body.amount)
 
     if (!Number.isFinite(donationAmount) || donationAmount < 1 || donationAmount > 10000) {
       return new Response(
         JSON.stringify({ error: 'Donation amount must be between $1 and $10,000.' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
       )
     }
 
@@ -25,10 +25,10 @@ export async function onRequestPost(context) {
 
     const params = new URLSearchParams()
     params.append('mode', 'payment')
-    params.append('success_url', `${origin}/donate/success?session_id={CHECKOUT_SESSION_ID}`)
-    params.append('cancel_url', `${origin}/donate/cancel`)
+    params.append('success_url', `${origin}/#/donate/success?session_id={CHECKOUT_SESSION_ID}`)
+    params.append('cancel_url', `${origin}/#/donate/cancel`)
     params.append('billing_address_collection', 'auto')
-    
+
     params.append('line_items[0][price_data][currency]', 'usd')
     params.append('line_items[0][price_data][unit_amount]', unitAmountCents.toString())
     params.append('line_items[0][price_data][product_data][name]', 'Donation to Lyra Foxwood')
@@ -48,8 +48,8 @@ export async function onRequestPost(context) {
 
     if (!stripeResponse.ok) {
       return new Response(
-        JSON.stringify({ error: session.error?.message || 'Stripe Checkout Session failed.' }),
-        { status: stripeResponse.status, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: session.error?.message || `Stripe error (${stripeResponse.status})` }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
       )
     }
 
@@ -59,8 +59,8 @@ export async function onRequestPost(context) {
     )
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err.message || 'Internal error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: `Function Exception: ${err.message}` }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   }
 }
