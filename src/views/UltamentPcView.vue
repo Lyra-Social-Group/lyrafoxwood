@@ -13,6 +13,10 @@ const activeCategory = ref<string>('all')
 // Your official $1.00 Stripe Payment Link
 const stripePaymentLink = 'https://buy.stripe.com/14A8wP9dI27p29I5yv0sU00'
 
+const handleRedirect = () => {
+  window.location.href = stripePaymentLink
+}
+
 // Complete PCPartPicker list with commentary
 const pcList = ref<PcItem[]>([
   // Core Hardware
@@ -269,7 +273,7 @@ const filteredItems = computed(() => {
         </div>
       </section>
 
-      <!-- Embedded Stripe Payment Link (Bottom) -->
+      <!-- $1.00 Direct Redirect Checkout Button Section (Bottom) -->
       <section class="bg-emerald-100/80 dark:bg-slate-900/90 border border-emerald-300 dark:border-emerald-500/40 rounded-2xl p-6 text-center space-y-4 shadow-xl">
         <h3 class="font-mono text-lg font-bold text-emerald-950 dark:text-emerald-300 flex items-center justify-center gap-2">
           <i class="fa-solid fa-dollar-sign text-yellow-400"></i>
@@ -279,15 +283,13 @@ const filteredItems = computed(() => {
           Donate $1.00 via Stripe to buy a single microscopic roll of light-year bubble wrap for this setup.
         </p>
 
-        <!-- Container for Embedded Frame -->
-        <div class="w-full max-w-xl mx-auto h-[620px] rounded-xl overflow-hidden border border-emerald-800/60 shadow-2xl bg-white dark:bg-slate-950">
-          <iframe
-            :src="stripePaymentLink"
-            class="w-full h-full border-0"
-            title="Stripe $1 Donation Checkout"
-            allow="payment"
-          ></iframe>
-        </div>
+        <button
+          @click="handleRedirect"
+          class="bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-95 flex items-center justify-center gap-2 mx-auto cursor-pointer"
+        >
+          <i class="fa-solid fa-credit-card"></i>
+          Checkout for $1.00
+        </button>
       </section>
 
       <!-- Warning Disclaimer -->
