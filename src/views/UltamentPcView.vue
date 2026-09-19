@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 
 interface PcItem {
   category: 'core' | 'storage' | 'peripherals' | 'macro' | 'abstract'
@@ -9,75 +9,9 @@ interface PcItem {
 }
 
 const activeCategory = ref<string>('all')
-const embedLoading = ref<boolean>(true)
-const embedError = ref<string | null>(null)
 
-// Dynamically load standard Stripe v3 SDK (PCI compliant, never bundled)
-const loadStripeScript = (): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    if ((window as any).Stripe) {
-      resolve()
-      return
-    }
-    const script = document.createElement('script')
-    script.src = 'https://js.stripe.com/v3/'
-    script.onload = () => resolve()
-    script.onerror = () => reject(new Error('Failed to load Stripe SDK'))
-    document.head.appendChild(script)
-  })
-}
-
-// Initialize Official Stripe Embedded Checkout
-const initEmbeddedCheckout = async () => {
-  try {
-    embedLoading.value = true
-    embedError.value = null
-    await loadStripeScript()
-
-    const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_sample'
-    const stripe = (window as any).Stripe(publishableKey)
-
-    // Clear mount container
-    const container = document.getElementById('checkout-form')
-    if (container) container.innerHTML = ''
-
-    // Initialize Embedded Checkout with clientSecret fetcher
-    const checkout = await stripe.initEmbeddedCheckout({
-      fetchClientSecret: async () => {
-        const response = await fetch('/api/checkout', { method: 'POST' })
-        const responseText = await response.text()
-
-        if (!responseText) {
-          throw new Error('Server returned an empty response. Verify Cloudflare Pages function deployment.')
-        }
-
-        let data: any
-        try {
-          data = JSON.parse(responseText)
-        } catch {
-          throw new Error(`Server returned non-JSON response (HTTP ${response.status}).`)
-        }
-
-        if (!response.ok || !data.client_secret) {
-          throw new Error(data.error || `HTTP ${response.status}: Failed to create Checkout Session`)
-        }
-
-        return data.client_secret
-      }
-    })
-
-    // Mount Embedded Checkout iframe
-    checkout.mount('#checkout-form')
-  } catch (err: any) {
-    embedError.value = err.message || 'Unable to load payment form.'
-  } finally {
-    embedLoading.value = false
-  }
-}
-
-onMounted(() => {
-  initEmbeddedCheckout()
-})
+// Your official $1.00 Stripe Payment Link
+const stripePaymentLink = 'https://buy.stripe.com/14A8wP9dI27p29I5yv0sU00'
 
 // Complete PCPartPicker list with commentary
 const pcList = ref<PcItem[]>([
@@ -335,7 +269,7 @@ const filteredItems = computed(() => {
         </div>
       </section>
 
-      <!-- Embedded Stripe Checkout Section (Bottom) -->
+      <!-- Embedded Stripe Payment Link (Bottom) -->
       <section class="bg-emerald-100/80 dark:bg-slate-900/90 border border-emerald-300 dark:border-emerald-500/40 rounded-2xl p-6 text-center space-y-4 shadow-xl">
         <h3 class="font-mono text-lg font-bold text-emerald-950 dark:text-emerald-300 flex items-center justify-center gap-2">
           <i class="fa-solid fa-dollar-sign text-yellow-400"></i>
@@ -345,21 +279,14 @@ const filteredItems = computed(() => {
           Donate $1.00 via Stripe to buy a single microscopic roll of light-year bubble wrap for this setup.
         </p>
 
-        <!-- Container for Embedded Checkout -->
-        <div class="max-w-xl mx-auto min-h-[350px] relative text-left bg-emerald-950/40 rounded-xl p-4 border border-emerald-800/50">
-          <div v-if="embedLoading" class="flex flex-col items-center justify-center py-16 space-y-3 text-center">
-            <i class="fa-solid fa-spinner animate-spin text-cyan-400 text-3xl"></i>
-            <p class="text-xs font-mono text-slate-300">Loading Embedded Checkout...</p>
-          </div>
-
-          <div v-if="embedError" class="text-center py-12 space-y-3">
-            <p class="text-red-400 text-xs font-mono">{{ embedError }}</p>
-            <button @click="initEmbeddedCheckout" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-mono rounded-lg transition-colors cursor-pointer">
-              Retry Connection
-            </button>
-          </div>
-
-          <div id="checkout-form" class="w-full"></div>
+        <!-- Container for Embedded Frame -->
+        <div class="w-full max-w-xl mx-auto h-[620px] rounded-xl overflow-hidden border border-emerald-800/60 shadow-2xl bg-white dark:bg-slate-950">
+          <iframe
+            :src="stripePaymentLink"
+            class="w-full h-full border-0"
+            title="Stripe $1 Donation Checkout"
+            allow="payment"
+          ></iframe>
         </div>
       </section>
 
