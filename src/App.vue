@@ -20,115 +20,147 @@
           </router-link>
 
           <!-- Dropdown: About & Info -->
-          <div class="relative group" @mouseleave="activeDropdown = null">
+          <div 
+            class="relative" 
+            @mouseenter="openDropdown('about')" 
+            @mouseleave="closeDropdown('about')"
+          >
             <button 
               @click="toggleDropdown('about')"
-              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none"
+              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none cursor-pointer"
             >
               <span>About</span>
               <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': activeDropdown === 'about' }"></i>
             </button>
 
+            <!-- Dropdown Menu -->
             <div 
               v-show="activeDropdown === 'about'" 
-              class="absolute left-0 mt-2 w-48 rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2 z-50"
+              class="absolute left-0 pt-2 w-48 z-50"
             >
-              <router-link 
-                to="/about" 
-                @click="activeDropdown = null"
-                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-              >
-                About Me
-              </router-link>
-              <router-link 
-                to="/skills" 
-                @click="activeDropdown = null"
-                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-              >
-                Skills & Certifications
-              </router-link>
+              <div class="rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2">
+                <router-link 
+                  to="/about" 
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                  active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+                >
+                  About Me
+                </router-link>
+                <router-link 
+                  to="/skills" 
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                  active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+                >
+                  Skills & Certifications
+                </router-link>
+              </div>
             </div>
           </div>
 
           <!-- Dropdown: Media & Projects -->
-          <div class="relative group" @mouseleave="activeDropdown = null">
+          <div 
+            class="relative" 
+            @mouseenter="openDropdown('media')" 
+            @mouseleave="closeDropdown('media')"
+          >
             <button 
               @click="toggleDropdown('media')"
-              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none"
+              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none cursor-pointer"
             >
               <span>Projects & Media</span>
               <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': activeDropdown === 'media' }"></i>
             </button>
 
+            <!-- Dropdown Menu -->
             <div 
               v-show="activeDropdown === 'media'" 
-              class="absolute left-0 mt-2 w-52 rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2 z-50"
+              class="absolute left-0 pt-2 w-52 z-50"
             >
-              <router-link 
-                to="/music" 
-                @click="activeDropdown = null"
-                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-              >
-                Music Hub
-              </router-link>
-              <router-link 
-                to="/gallery" 
-                @click="activeDropdown = null"
-                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-              >
-                VRC Gallery
-              </router-link>
-              <router-link 
-                to="/ultament-pc" 
-                @click="activeDropdown = null"
-                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-              >
-                Ultimate PC Build
-              </router-link>
+              <div class="rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2">
+                <router-link 
+                  to="/music" 
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                  active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+                >
+                  Music Hub
+                </router-link>
+                <router-link 
+                  to="/gallery" 
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                  active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+                >
+                  VRC Gallery
+                </router-link>
+                <router-link 
+                  to="/ultament-pc" 
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                  active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+                >
+                  Ultimate PC Build
+                </router-link>
+              </div>
             </div>
           </div>
 
           <!-- Dropdown: Community & Links -->
-          <div class="relative group" @mouseleave="activeDropdown = null">
+          <div 
+            class="relative" 
+            @mouseenter="openDropdown('community')" 
+            @mouseleave="closeDropdown('community')"
+          >
             <button 
               @click="toggleDropdown('community')"
-              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none"
+              class="flex items-center space-x-1 px-2 py-1 text-emerald-900 dark:text-emerald-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus:outline-none cursor-pointer"
             >
               <span>Community</span>
               <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': activeDropdown === 'community' }"></i>
             </button>
 
+            <!-- Dropdown Menu -->
             <div 
               v-show="activeDropdown === 'community'" 
-              class="absolute left-0 mt-2 w-48 rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2 z-50"
+              class="absolute left-0 pt-2 w-48 z-50"
             >
-              <router-link 
-                to="/links" 
-                @click="activeDropdown = null"
-                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-              >
-                Links & Socials
-              </router-link>
-              <router-link 
-                to="/donate" 
-                @click="activeDropdown = null"
-                class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                active-class="text-cyan-600 dark:text-cyan-400 font-bold"
-              >
-                Donate
-              </router-link>
+              <div class="rounded-xl bg-emerald-100/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xl backdrop-blur-md py-2">
+                <router-link 
+                  to="/links" 
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                  active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+                >
+                  Links & Socials
+                </router-link>
+                <a 
+                  href="https://shop.lyrafoxwood.app" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors flex items-center justify-between"
+                >
+                  <span>Shop Merch</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-70"></i>
+                </a>
+                <router-link 
+                  to="/donate" 
+                  @click="activeDropdown = null"
+                  class="block px-4 py-2 text-sm text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-800/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                  active-class="text-cyan-600 dark:text-cyan-400 font-bold"
+                >
+                  Donate
+                </router-link>
+              </div>
             </div>
           </div>
 
         </nav>
       </div>
-      
+
+      <!-- Right Header Items (Theme Toggle & Contact) -->
       <div class="flex items-center space-x-2 sm:space-x-4">
         
         <div class="hidden lg:flex items-center space-x-3 text-emerald-900 dark:text-emerald-200 text-lg">
@@ -147,7 +179,7 @@
         <button 
           @click="toggleDarkMode" 
           aria-label="Toggle Dark Mode"
-          class="p-2 text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-900/50 rounded-full transition-colors focus:outline-none"
+          class="p-2 text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/50 dark:hover:bg-emerald-900/50 rounded-full transition-colors focus:outline-none cursor-pointer"
         >
           <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-lg"></i>
           <i v-else class="fa-solid fa-moon text-emerald-800 text-lg"></i>
@@ -169,6 +201,7 @@
           <i v-else class="fa-solid fa-bars text-xl"></i>
         </button>
       </div>
+
     </header>
 
     <!-- Mobile Navigation Drawer -->
@@ -186,7 +219,7 @@
           Home
         </router-link>
 
-        <!-- Mobile Accordion: About -->
+        <!-- Mobile Section: About -->
         <div class="space-y-2">
           <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 pt-2">About</div>
           <router-link 
@@ -207,7 +240,7 @@
           </router-link>
         </div>
 
-        <!-- Mobile Accordion: Projects & Media -->
+        <!-- Mobile Section: Projects & Media -->
         <div class="space-y-2">
           <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 pt-2">Projects & Media</div>
           <router-link 
@@ -236,7 +269,7 @@
           </router-link>
         </div>
 
-        <!-- Mobile Accordion: Community -->
+        <!-- Mobile Section: Community -->
         <div class="space-y-2">
           <div class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 pt-2">Community</div>
           <router-link 
@@ -247,6 +280,16 @@
           >
             Links & Socials
           </router-link>
+          <a 
+            href="https://shop.lyrafoxwood.app" 
+            target="_blank"
+            rel="noopener noreferrer"
+            @click="mobileMenuOpen = false"
+            class="block text-emerald-950 dark:text-emerald-200 hover:text-cyan-500 transition-colors pl-2 py-0.5 flex items-center gap-2"
+          >
+            <span>Shop Merch</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-70"></i>
+          </a>
           <router-link 
             to="/donate" 
             @click="mobileMenuOpen = false"
@@ -318,6 +361,20 @@ import CookieBanner from './components/CookieBanner.vue'
 const isDark = ref(false)
 const mobileMenuOpen = ref(false)
 const activeDropdown = ref(null)
+let closeTimeout = null
+
+const openDropdown = (name) => {
+  if (closeTimeout) clearTimeout(closeTimeout)
+  activeDropdown.value = name
+}
+
+const closeDropdown = (name) => {
+  closeTimeout = setTimeout(() => {
+    if (activeDropdown.value === name) {
+      activeDropdown.value = null
+    }
+  }, 150)
+}
 
 const toggleDropdown = (name) => {
   if (activeDropdown.value === name) {
