@@ -1,217 +1,276 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-interface SpecCategory {
-  title: string
-  icon: string
-  badgeText: string
-  badgeColor: string
-  items: { name: string; price: string; note: string }[]
+interface PcItem {
+  category: 'core' | 'storage' | 'peripherals' | 'macro' | 'abstract'
+  name: string
+  price: string
+  commentary: string
 }
 
-const totalCost = '∞! (Absolute Beyond Package)'
+const activeCategory = ref<string>('all')
 
-const specCategories = ref<SpecCategory[]>([
-  {
-    title: 'Silicon & Compute Engine',
-    icon: 'fa-solid fa-microchip text-cyan-400',
-    badgeText: 'Hardware Core',
-    badgeColor: 'border-cyan-500/40 text-cyan-300 bg-cyan-500/10',
-    items: [
-      { name: 'AMD EPYC 9754 (x2 Dual Socket - 256 Cores / 512 Threads)', price: 'Enterprise', note: 'Zen 4c architecture running parallel simulation loops' },
-      { name: 'Gigabyte MZ73-LM2 Dual Socket SP5 Server Motherboard', price: 'Server Grade', note: 'Dual SP5 socket with 24 DDR5 DIMM slots & PCIe 5.0' },
-      { name: 'G.Skill Trident Z RGB 6 TB DDR5-4800 ECC Registered RAM', price: 'Enterprise', note: 'Unbuffered multi-terabyte error-correcting memory' },
-      { name: 'NVIDIA RTX PRO 6000 Blackwell Max-Q 96 GB', price: '$17,999.99', note: '96GB VRAM for rendering hyper-dimensional shaders' },
-      { name: 'Asus ROG STRIX LC 360 RGB White Edition CPU Cooler', price: '$411.00', note: 'Custom modified block for planetary liquid nitrogen routing' },
-      { name: 'Thermal Grizzly Kryonaut Extreme (33.84g)', price: '$94.99', note: 'Applied across both EPYC heatspreaders' }
-    ]
+const pcList = ref<PcItem[]>([
+  // Core Hardware
+  { 
+    category: 'core', 
+    name: 'AMD EPYC 9754 128-Core Processor (x2 Dual Socket)', 
+    price: 'Enterprise', 
+    commentary: '256 cores so you can run 512 instances of Chrome and still lag in VRChat.' 
   },
-  {
-    title: 'Storage Infrastructure & Cold Vaults',
-    icon: 'fa-solid fa-database text-emerald-400',
-    badgeText: 'Petabyte Array',
-    badgeColor: 'border-emerald-500/40 text-emerald-300 bg-emerald-500/10',
-    items: [
-      { name: '1 Petabyte NVMe PCIe 5.0 SAN Storage Array', price: 'Enterprise', note: 'Direct Fiber Channel connection to local data center' },
-      { name: 'Kingston FURY Renegade G5 8 TB M.2 PCIe 5.0 NVMe SSD', price: '$2,955.93', note: 'Blazing fast boot drive for OS and real-time cache' },
-      { name: 'Samsung 990 Pro 2 TB M.2 PCIe 4.0 NVMe SSD', price: '$389.00', note: 'Dedicated scratch disk for video rendering' },
-      { name: 'Mushkin Source HC 16 TB 2.5" SSD (x3 Array)', price: '$48,372.90', note: 'High-density SATA array for local backup drops' },
-      { name: 'Apricorn Aegis Fortress L3 20 TB Hardware Encrypted SSD', price: '$14,199.00', note: 'FIPS 140-3 Level 3 hardware encrypted external vault' }
-    ]
+  { 
+    category: 'core', 
+    name: 'Asus ROG STRIX LC 360 RGB White Edition CPU Cooler', 
+    price: '$411.00', 
+    commentary: 'A consumer AIO for dual enterprise server sockets. It will melt in 0.4 seconds, but hey, white aesthetic!' 
   },
-  {
-    title: 'Peripherals, Visuals & Audio Matrix',
-    icon: 'fa-solid fa-desktop text-purple-400',
-    badgeText: 'Sensory Output',
-    badgeColor: 'border-purple-500/40 text-purple-300 bg-purple-500/10',
-    items: [
-      { name: 'Asus ProArt Display PA32KCX 32" 8K 60Hz Monitor (x4 Quad Quad Setup)', price: '$35,196.00', note: '32-inch 7680x4320 Mini-LED color accurate screens' },
-      { name: 'Pimax Crystal Super 8K Micro-OLED VR Headset', price: '$3,000.00', note: 'Micro-OLED panel clarity for ultra-immersive VRChat worlds' },
-      { name: 'HiFiMAN Susvara Planar Magnetic Headphones', price: '$5,999.00', note: 'Ultra-clear acoustic monitoring for audio mixing' },
-      { name: 'Edifier S3000MKII 256W Active Bookshelf Speakers', price: '$999.99', note: 'Planar diaphragm tweeters with wireless interconnect' },
-      { name: 'ASUS ROG Azoth Extreme 20th Edition Mechanical Keyboard', price: 'Custom', note: 'Full OLED touchscreen display and carbon fiber plate' },
-      { name: 'Finalmouse UltralightX Guardian Tiger', price: 'Custom', note: 'Ultralight carbon-composite wireless gaming mouse' },
-      { name: 'OBSBOT Tiny 3 4K AI-Powered Tracking Webcam', price: '$349.00', note: 'Auto-framing and PTZ control for live streams' }
-    ]
+  { 
+    category: 'core', 
+    name: 'Thermal Grizzly Kryonaut Extreme (33.84g)', 
+    price: '$94.99', 
+    commentary: 'Butter both CPUs like toast. Do NOT accidentally apply to the Narrative Source Code.' 
   },
-  {
-    title: 'Macro Physical & Planetary Infrastructure',
-    icon: 'fa-solid fa-earth-americas text-yellow-400',
-    badgeText: 'Global Assets',
-    badgeColor: 'border-yellow-500/40 text-yellow-300 bg-yellow-500/10',
-    items: [
-      { name: 'AMAZON COMPANY', price: '$2.69 Trillion', note: 'Acquired for same-day delivery on replacement components' },
-      { name: 'U.S. Interstate Highway System', price: '$634 Billion', note: 'Low-latency physical logistics cabling route' },
-      { name: 'NEOM Mega-Project', price: '$500 Billion', note: 'Dedicated cooling facility and solar farm region' },
-      { name: 'International Space Station (ISS)', price: '$150 Billion', note: 'Zero-gravity orbital heat sink testing platform' },
-      { name: 'USS Gerald R. Ford (CVN-78 Aircraft Carrier)', price: '$13.3 Billion', note: 'Mobile off-grid backup generator platform' }
-    ]
+  { 
+    category: 'core', 
+    name: 'Gigabyte MZ73-LM2 Dual Socket SP5 Server Motherboard', 
+    price: 'Enterprise', 
+    commentary: 'Supports 24 DDR5 DIMMs. Weighs more than a mid-sized sedan.' 
   },
-  {
-    title: 'Cosmic & Metaphysical Upgrades',
-    icon: 'fa-solid fa-infinity text-cyan-300',
-    badgeText: 'Omnipresent Tier',
-    badgeColor: 'border-cyan-500/40 text-cyan-300 bg-cyan-500/10',
-    items: [
-      { name: 'The Multiverse (Omniverse Package)', price: '$150 Decillion', note: 'Multi-threaded reality rendering across parallel dimensions' },
-      { name: 'A Dyson Sphere Solar Engine', price: '$20 Septillion', note: 'Harnessing 100% of star energy output for power delivery' },
-      { name: 'Localized Stable Black Hole', price: '$50 Sextillion', note: 'Installed at chassis base for automated packaging disposal' },
-      { name: 'The Unifying Theory of Everything', price: '$444 Quinquagintillion', note: 'Patch release fix for quantum physics bugs' },
-      { name: 'The Absolute Infinity (Ω / Cantor Absolute)', price: '∞ × 2', note: 'Infinite computing headroom with 2x safety tolerance' }
-    ]
+  { 
+    category: 'core', 
+    name: 'G.Skill Trident Z RGB 6 TB DDR5-4800 ECC Registered RAM', 
+    price: 'Enterprise', 
+    commentary: 'Enough memory to cache the entire internet, yet Windows will still consume 80% of it at idle.' 
+  },
+  { 
+    category: 'core', 
+    name: 'NVIDIA RTX PRO 6000 Blackwell Max-Q 96 GB Video Card', 
+    price: '$17,999.99', 
+    commentary: 'Requires its own nuclear sub-station and a permission slip from the Department of Energy.' 
+  },
+  { 
+    category: 'core', 
+    name: 'CORSAIR iCUE LINK 9000D RGB AIRFLOW Super Full-Tower Case', 
+    price: 'Chassis', 
+    commentary: 'Legally classified as a two-bedroom apartment in San Francisco.' 
+  },
+  { 
+    category: 'core', 
+    name: 'be quiet! Straight Power 11 3500W 80+ Gold PSU', 
+    price: '$1,008.00', 
+    commentary: 'Will cause your neighborhood power grid to dim every time you open a Excel spreadsheet.' 
+  },
+  { 
+    category: 'core', 
+    name: 'Microsoft Windows 11 Enterprise (64-bit)', 
+    price: '$199.98', 
+    commentary: 'Still forces Candy Crush onto your start menu despite controlling the Multiverse.' 
+  },
+
+  // Storage
+  { 
+    category: 'storage', 
+    name: 'NVMe PCIe 5.0 SAN Storage Array (1 Petabyte)', 
+    price: 'Enterprise', 
+    commentary: 'Finally enough room to hold your raw OBS stream recordings.' 
+  },
+  { 
+    category: 'storage', 
+    name: 'Kingston FURY Renegade G5 8 TB M.2 PCIe 5.0 NVMe SSD', 
+    price: '$2,955.93', 
+    commentary: 'Loads Skyrim before you even press the power button.' 
+  },
+  { 
+    category: 'storage', 
+    name: 'Mushkin Source HC 16 TB 2.5" SSD (x3 Array)', 
+    price: '$48,372.90', 
+    commentary: 'Cost more than a brand-new Ford Mustang. Used strictly for meme storage.' 
+  },
+  { 
+    category: 'storage', 
+    name: 'Apricorn Aegis Fortress L3 20 TB External SSD', 
+    price: '$14,199.00', 
+    commentary: 'Encrypted drive to protect your secret folder from parallel timeline entities.' 
+  },
+
+  // Peripherals
+  { 
+    category: 'peripherals', 
+    name: 'Asus ProArt Display PA32KCX 32" 8K 60 Hz Monitor (x4 Setup)', 
+    price: '$35,196.00', 
+    commentary: '32K resolution combined. So clear you can see individual subatomic particles in desktop wallpaper.' 
+  },
+  { 
+    category: 'peripherals', 
+    name: 'Pimax Crystal Super 8K Micro-OLED VR Headset', 
+    price: '$3,000.00', 
+    commentary: 'Weighs 12 lbs. Guaranteed neck strength gains while visiting custom VRChat worlds.' 
+  },
+  { 
+    category: 'peripherals', 
+    name: 'HiFiMAN Susvara Planar Magnetic Headphones', 
+    price: '$5,999.00', 
+    commentary: 'You can hear the artist breathing in another recording studio down the block.' 
+  },
+  { 
+    category: 'peripherals', 
+    name: 'APC SURT20KRMXLT UPS Unit', 
+    price: '$26,510.99', 
+    commentary: 'Provides 4 seconds of backup battery life for this exact rig.' 
+  },
+
+  // Macro & Earth Assets
+  { 
+    category: 'macro', 
+    name: 'BOX USA Medium Moving Boxes (10 Million-Pack)', 
+    price: '$2.69', 
+    commentary: 'Used to wrap the 9000D case for shipping. Takes up two U.S. states.' 
+  },
+  { 
+    category: 'macro', 
+    name: 'AMAZON COMPANY', 
+    price: '$2.69 Trillion', 
+    commentary: 'Purchased exclusively so you can get Prime Same-Day Delivery on thermal paste.' 
+  },
+  { 
+    category: 'macro', 
+    name: 'International Space Station (ISS)', 
+    price: '$150 Billion', 
+    commentary: 'Mounted on top of the case as an external radiator for thermal testing.' 
+  },
+  { 
+    category: 'macro', 
+    name: 'USS Gerald R. Ford (CVN-78 Aircraft Carrier)', 
+    price: '$13.3 Billion', 
+    commentary: 'Mobile ocean barge required to carry the PC setup across international waters.' 
+  },
+
+  // Abstract & Cosmic Concepts
+  { 
+    category: 'abstract', 
+    name: 'Localized Stable Black Hole (Trash Disposal)', 
+    price: '$50 Sextillion', 
+    commentary: 'Conveniently mounted under the PSU shroud to instantly swallow GPU packaging boxes.' 
+  },
+  { 
+    category: 'abstract', 
+    name: 'The Laws of Physics', 
+    price: '$777 Tredecillion', 
+    commentary: 'Custom tweaked to allow 256 cores to run at 12.0 GHz without exploding universe bounds.' 
+  },
+  { 
+    category: 'abstract', 
+    name: 'The "Undo" Button for the Big Bang', 
+    price: '$100 Nonillion', 
+    commentary: 'Press this immediately if you accidentally get thermal paste inside the CPU socket.' 
+  },
+  { 
+    category: 'abstract', 
+    name: 'The Concept of "More" Itself', 
+    price: '∞', 
+    commentary: 'Added to cart just in case 6 TB of DDR5 RAM isn\'t enough.' 
+  },
+  { 
+    category: 'abstract', 
+    name: 'A Single Fragile Shipping Box Sticker', 
+    price: '$0.10', 
+    commentary: 'The only thing holding the physical structural integrity of reality together.' 
   }
 ])
 
-const buildMetrics = ref([
-  { label: 'Total CPU Cores', value: '256 Cores / 512 Threads', icon: 'fa-solid fa-microchip text-cyan-400' },
-  { label: 'System RAM', value: '6,144 GB DDR5 ECC', icon: 'fa-solid fa-memory text-purple-400' },
-  { label: 'Raw Storage Capacity', value: '1.05+ Petabytes', icon: 'fa-solid fa-hard-drive text-emerald-400' },
-  { label: 'Estimated Power Draw', value: '3,500W + 1 Dyson Sphere', icon: 'fa-solid fa-bolt text-yellow-400' }
-])
+const categories = [
+  { id: 'all', label: 'All Nonsense', icon: 'fa-solid fa-layer-group' },
+  { id: 'core', label: 'Core Rig', icon: 'fa-solid fa-microchip' },
+  { id: 'storage', label: 'Petabytes', icon: 'fa-solid fa-database' },
+  { id: 'peripherals', label: 'Sensory Gear', icon: 'fa-solid fa-desktop' },
+  { id: 'macro', label: 'Real Estate', icon: 'fa-solid fa-earth-americas' },
+  { id: 'abstract', label: 'Cosmic & Void', icon: 'fa-solid fa-infinity' }
+]
 
-const assemblyNotes = ref([
-  'Apply Thermal Grizzly paste evenly across both EPYC CPU heatspreaders. Do not apply liquid metal to abstract concepts.',
-  'Position the Localized Black Hole directly below the PSU shroud to clear cardboard boxes automatically.',
-  'Place one Fragile Sticker on the CORSAIR 9000D tempered glass, and another on the Titanium Fourth Wall.',
-  'If a blue screen occurs during boot, press the "Undo" Button for the Big Bang and return to the Pre-Existing Void.'
-])
+const filteredItems = computed(() => {
+  if (activeCategory.value === 'all') return pcList.value
+  return pcList.value.filter(item => item.category === activeCategory.value)
+})
 </script>
 
 <template>
   <main class="min-h-screen bg-transparent text-emerald-950 dark:text-emerald-50 p-4 sm:p-8 font-sans transition-colors duration-300">
-    <div class="max-w-6xl mx-auto space-y-10">
+    <div class="max-w-6xl mx-auto space-y-8">
       
-      <!-- Banner & Title -->
+      <!-- Meme Banner -->
       <header class="bg-emerald-100/70 dark:bg-slate-900/80 backdrop-blur-md border border-emerald-200/60 dark:border-emerald-900/60 rounded-2xl p-6 sm:p-8 shadow-xl">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/30">
-              <i class="fa-solid fa-sparkles text-yellow-400"></i> Ultimate Build Configuration
+              <i class="fa-solid fa-fire text-yellow-400"></i> Overkill God Tier List
             </div>
             <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-emerald-950 dark:text-emerald-300 font-mono">
               The Ultament PC Build
             </h1>
-            <p class="text-sm sm:text-base text-emerald-900/80 dark:text-emerald-200/80 max-w-2xl">
-              An enterprise server build that escalated past global infrastructure and into hyper-dimensional space.
+            <p class="text-xs sm:text-sm text-emerald-900/80 dark:text-emerald-200/80 font-mono">
+              PCPartPicker Status: Completely Out of Control (OWO Edition)
             </p>
           </div>
 
-          <div class="bg-slate-950 border border-emerald-500/30 p-5 rounded-xl text-left lg:text-right min-w-[240px] shadow-inner">
-            <span class="block text-xs font-mono text-emerald-400/80 uppercase">Est. Total Investment</span>
-            <span class="text-2xl font-mono font-extrabold text-yellow-400">
-              {{ totalCost }}
+          <div class="bg-slate-950 border border-yellow-500/40 p-4 rounded-xl text-left md:text-right min-w-[240px] shadow-lg">
+            <span class="block text-xs font-mono text-emerald-400/80 uppercase">Est. Total Checkout</span>
+            <span class="text-2xl font-mono font-extrabold text-yellow-400 animate-pulse">
+              ∞! + $4.99 Shipping
             </span>
-            <span class="block text-[10px] font-mono text-slate-400 mt-1">Includes shipping, taxes, and Dyson Sphere permits</span>
+            <span class="block text-[10px] font-mono text-slate-400 mt-1">Free delivery with Amazon Prime purchase</span>
           </div>
         </div>
       </header>
 
-      <!-- Key Metrics Overview Grid -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div 
-          v-for="metric in buildMetrics" 
-          :key="metric.label"
-          class="bg-emerald-50/60 dark:bg-slate-900/60 border border-emerald-200 dark:border-slate-800 rounded-xl p-4 flex items-center space-x-4 shadow-sm"
+      <!-- Category Filter Buttons -->
+      <nav class="flex flex-wrap gap-2 border-b border-emerald-200/60 dark:border-emerald-900/40 pb-4">
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          @click="activeCategory = cat.id"
+          :class="[
+            'px-4 py-2 rounded-lg font-mono text-xs sm:text-sm flex items-center gap-2 transition-all duration-200',
+            activeCategory === cat.id
+              ? 'bg-emerald-600 dark:bg-emerald-600 text-white shadow-md'
+              : 'bg-emerald-100/60 dark:bg-slate-900/60 text-emerald-900 dark:text-emerald-200 hover:bg-emerald-200/70 dark:hover:bg-slate-800'
+          ]"
         >
-          <div class="p-3 bg-emerald-100 dark:bg-slate-800 rounded-lg text-xl">
-            <i :class="metric.icon"></i>
-          </div>
-          <div>
-            <p class="text-xs font-mono text-emerald-800 dark:text-slate-400 uppercase">{{ metric.label }}</p>
-            <p class="text-sm font-mono font-bold text-emerald-950 dark:text-emerald-300">{{ metric.value }}</p>
-          </div>
-        </div>
-      </section>
+          <i :class="cat.icon"></i>
+          {{ cat.label }}
+        </button>
+      </nav>
 
-      <!-- Component Categories -->
-      <section class="space-y-6">
-        <div 
-          v-for="cat in specCategories" 
-          :key="cat.title"
-          class="bg-emerald-100/40 dark:bg-slate-900/80 border border-emerald-200/80 dark:border-emerald-900/50 rounded-2xl p-6 shadow-md transition-colors"
+      <!-- Dynamic Item List -->
+      <section class="space-y-4">
+        <div
+          v-for="(item, idx) in filteredItems"
+          :key="item.name"
+          class="bg-emerald-50/80 dark:bg-slate-900/80 border border-emerald-200/60 dark:border-slate-800/80 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-cyan-500/50 transition-all shadow-sm"
         >
-          <div class="flex items-center justify-between mb-4 border-b border-emerald-200 dark:border-emerald-900/50 pb-3">
-            <h2 class="text-lg sm:text-xl font-mono font-bold text-emerald-950 dark:text-emerald-200 flex items-center gap-3">
-              <i :class="cat.icon"></i>
-              {{ cat.title }}
-            </h2>
-            <span :class="['text-xs font-mono px-3 py-1 rounded-full border', cat.badgeColor]">
-              {{ cat.badgeText }}
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div 
-              v-for="item in cat.items" 
-              :key="item.name"
-              class="bg-white/60 dark:bg-slate-950/70 border border-emerald-200/60 dark:border-slate-800/80 rounded-xl p-4 flex flex-col justify-between space-y-2 hover:border-cyan-500/40 transition-colors"
-            >
-              <div class="flex justify-between items-start gap-2">
-                <span class="font-mono text-sm font-bold text-emerald-950 dark:text-slate-200">{{ item.name }}</span>
-                <span class="font-mono text-xs font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20 whitespace-nowrap">
-                  {{ item.price }}
-                </span>
-              </div>
-              <p class="text-xs text-emerald-800/80 dark:text-slate-400 font-sans">
-                {{ item.note }}
-              </p>
+          <div class="space-y-1.5 max-w-3xl">
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-mono text-slate-400">#{{ idx + 1 }}</span>
+              <h3 class="font-mono text-sm sm:text-base font-bold text-emerald-950 dark:text-emerald-100">
+                {{ item.name }}
+              </h3>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Build & Assembly Guide Section -->
-      <section class="bg-emerald-100/40 dark:bg-slate-900/80 border border-emerald-200/80 dark:border-emerald-900/50 rounded-2xl p-6 shadow-md">
-        <h2 class="text-xl font-mono font-bold text-emerald-950 dark:text-emerald-200 flex items-center gap-2 mb-4">
-          <i class="fa-solid fa-wrench text-yellow-400"></i> Assembly & Cable Management Protocol
-        </h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div 
-            v-for="(note, idx) in assemblyNotes" 
-            :key="idx"
-            class="flex items-start space-x-3 bg-white/60 dark:bg-slate-950/70 border border-emerald-200/60 dark:border-slate-800/80 rounded-xl p-4"
-          >
-            <span class="font-mono text-xs font-bold bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 px-2 py-1 rounded border border-cyan-500/30">
-              0{{ idx + 1 }}
-            </span>
-            <p class="text-xs font-mono text-emerald-900 dark:text-slate-300">
-              {{ note }}
+            <p class="text-xs text-emerald-800 dark:text-slate-400 font-sans italic">
+              "{{ item.commentary }}"
             </p>
           </div>
+
+          <span class="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/30 whitespace-nowrap self-start sm:self-center">
+            {{ item.price }}
+          </span>
         </div>
       </section>
 
-      <!-- Danger/Warning Footer Box -->
+      <!-- Warning Disclaimer -->
       <footer class="bg-yellow-500/10 border border-yellow-500/40 rounded-2xl p-6 flex items-start gap-4 shadow-lg">
-        <i class="fa-solid fa-triangle-exclamation text-yellow-400 text-2xl mt-0.5 flex-shrink-0"></i>
-        <div class="space-y-1">
-          <h3 class="text-sm font-mono font-bold text-yellow-400">
-            Singularity Safety Notice
-          </h3>
-          <p class="text-xs text-emerald-900 dark:text-slate-300">
-            Ensure your localized trash black hole is safely mounted at the bottom of the Corsair 9000D case prior to powering up the dual SP5 motherboard sockets. Do not attempt to overclock reality without active Paradox Prevention Insurance.
-          </p>
+        <i class="fa-solid fa-biohazard text-yellow-400 text-2xl mt-0.5 flex-shrink-0"></i>
+        <div class="space-y-1 font-mono text-xs text-emerald-900 dark:text-slate-300">
+          <strong class="text-yellow-400 block text-sm">Critical Assembly Advice:</strong>
+          If your localized black hole starts pulling your dual 128-core EPYC processors into the event horizon, press the Big Bang "Undo" button before your 6 TB DDR5 RAM memory leak crashes reality.
         </div>
       </footer>
 
