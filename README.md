@@ -35,7 +35,7 @@ The official web hub, link portal, and portfolio of **Lyra Foxwood** — Founder
 
 | Platform | Link |
 | :--- | :--- |
-| **🌐 Website** | [lyrafoxwood.app](https://lyrafoxwood.app) |
+| **🌐 Website** | [lyrafoxwood.com](https://lyrafoxwood.com) |
 | **🟣 Twitch** | [@lyrathefox](https://twitch.tv/lyrathefox) |
 | **🎥 YouTube** | [Lyra Foxwood](https://youtube.com/channel/UCngrGmmna1EEp5Q940Fy95g) |
 | **🎵 TikTok** | [@lyrafoxwood](https://tiktok.com/@lyrafoxwood) |
