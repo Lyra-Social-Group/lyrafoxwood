@@ -36,18 +36,18 @@ The official web hub, link portal, and portfolio of **Lyra Foxwood** — Founder
 | Platform | Link |
 | :--- | :--- |
 | **🌐 Website** | [lyrafoxwood.com](https://lyrafoxwood.com) |
-| **🟣 Twitch** | [@lyrathefox](https://twitch.tv/lyrathefox) |
+| **🟣 Twitch** | [@lyrathefox](https://twitch.tv/lyrafoxwood) |
 | **🎥 YouTube** | [Lyra Foxwood](https://youtube.com/channel/UCngrGmmna1EEp5Q940Fy95g) |
 | **🎵 TikTok** | [@lyrafoxwood](https://tiktok.com/@lyrafoxwood) |
 | **🦋 Bluesky** | [@lyrafoxwood.social](https://bsky.app/profile/lyrafoxwood.social) |
-| **🧡 Patreon** | [Lyra The Fox](https://patreon.com/LyraTheFox) |
+| **🧡 Patreon** | [Lyra The Fox](https://patreon.comLyraTfoxwood) |
 | **💬 Contact Email** | Contactme@lyrafoxwood.app |
 
 ---
 
 <div align="center">
 
-Maintained, Built, and with ❤️ by **[Lyra Social Group](https://lyrasocialgroup.tech)**  
+Maintained, Built, and with ❤️ by **[Lyra Social Group](http://lyrasocialgroup.tech)**  
 *A company founded, owned, and led by **[Lyra Foxwood](https://lyrafoxwood.com)** (Founder & CEO)*
 
 © 2026 Lyra Social Group. All Rights Reserved.  
