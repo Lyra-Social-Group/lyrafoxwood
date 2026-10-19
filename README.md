@@ -2,13 +2,13 @@
 
 # Lyra Foxwood | Official Web Hub
 
-[![Live Website](https://img.shields.io/badge/Website-lyrafoxwood.app-00DC82?style=for-the-badge&logo=nuxtdotjs&logoColor=white)](https://lyrafoxwood.app)
+[![Live Website](https://img.shields.io/badge/Website-lyrafoxwood.com-00DC82?style=for-the-badge&logo=nuxtdotjs&logoColor=white)](https://lyrafoxwood.com)
 [![Organization](https://img.shields.io/badge/Organization-Lyra--Social--Group-blue?style=for-the-badge&logo=github)](https://github.com/Lyra-Social-Group)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 The official web hub, link portal, and portfolio of **Lyra Foxwood** — Founder, CEO, content creator, VRChat enthusiast, and streaming personality.
 
-[🌐 Visit Live Site](https://lyrafoxwood.app) · [💬 Community Web](https://lyrasocialgroup.tech)
+[🌐 Visit Live Site](https://lyrafoxwood.com) · [💬 Community Web](https://lyrasocialgroup.tech)
 
 ---
 
